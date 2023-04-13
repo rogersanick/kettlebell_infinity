@@ -7,4 +7,5 @@
   },
   "headwind.runOnSave": false,
   "typescript.preferences.importModuleSpecifier": "non-relative"
+  // "deno.enable": true
 }
