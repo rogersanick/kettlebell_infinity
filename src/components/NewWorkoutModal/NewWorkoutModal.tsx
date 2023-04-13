@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import Select from 'react-select';
+import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
 import {
   filteredExercisesForWorkoutOverview,
@@ -10,7 +11,8 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 import { NewWorkoutModalStepper } from '@/components/NewWorkoutModal/NewWorkoutModalStepper';
 import { SegmentTimeline } from '@/components/NewWorkoutModal/SegmentTimeline';
 
-import { Exercises, generateNewWorkout, WorkoutOverview } from '@/api/supabase';
+import { Exercises } from '@/api/supabaseDB';
+import { generateNewWorkout } from '@/api/supabaseFunc';
 
 interface NewWorkoutModalProps {
   isOpen: boolean;
@@ -77,7 +79,6 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       includeExposive,
       includeCarrying
     );
-    // console.log(filteredExercises.map(e => `${e.id} | ${e.title} | ${e.muscles_targeted}\n`))
     const newExercisesForSegment =
       newWorkoutOverview &&
       getExercisesForWorkoutOverview(newWorkoutOverview, filteredExercises);
@@ -158,7 +159,9 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       <label className='relative mb-4 mt-4 inline-flex cursor-pointer items-center'>
         <input
           type='checkbox'
-          onChange={(e) => setIncludeBodyWeight(str2bool(e.target.value))}
+          onChange={(e) =>
+            setIncludeBodyWeight(e.target.value === 'true' ? false : true)
+          }
           value={includeBodyWeight.toString().toLowerCase()}
           className='peer sr-only'
         />
@@ -170,7 +173,9 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       <label className='relative mb-4 inline-flex cursor-pointer items-center'>
         <input
           type='checkbox'
-          onChange={(e) => setIncludeExposive(str2bool(e.target.value))}
+          onChange={(e) =>
+            setIncludeExposive(e.target.value === 'true' ? false : true)
+          }
           value={includeExposive.toString().toLowerCase()}
           className='peer sr-only'
         />
@@ -182,7 +187,9 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       <label className='relative mb-4 inline-flex cursor-pointer items-center'>
         <input
           type='checkbox'
-          onChange={(e) => setIncludeCarrying(str2bool(e.target.value))}
+          onChange={(e) =>
+            setIncludeCarrying(e.target.value === 'true' ? false : true)
+          }
           value={includeCarrying.toString().toLowerCase()}
           className='peer sr-only'
         />
@@ -218,7 +225,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
   const assignExercisesFormBlock = () => {
     const exercisesForSelectedSegment =
       selectedSegment &&
-      exercisesForSegment[selectedSegment].map((id) => {
+      exercisesForSegment[selectedSegment]?.map((id) => {
         return exercises?.find((e) => e.id === parseInt(id));
       });
     if (!newWorkoutOverview) return <div></div>;
@@ -331,10 +338,4 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       </div>
     </div>
   );
-};
-
-const str2bool = (value: string) => {
-  if (value.toLowerCase() === 'true') return true;
-  if (value.toLowerCase() === 'false') return false;
-  throw new Error('Invalid boolean value');
 };

@@ -1,6 +1,6 @@
 import Button from '@/components/buttons/Button';
 
-import { WorkoutOverview } from '@/api/supabase';
+import { WorkoutOverview } from '@/api/supabaseFunc';
 
 interface WorkoutTableProps {
   workouts: WorkoutOverview[];

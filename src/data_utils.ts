@@ -1,4 +1,5 @@
-import { Exercises, WorkoutOverview } from '@/api/supabase';
+import { Exercises } from '@/api/supabaseDB';
+import { WorkoutOverview } from '@/api/supabaseFunc';
 
 const skillLevelRankings = {
   Beginner: 0,
@@ -22,9 +23,15 @@ export const filteredExercisesForWorkoutOverview = (
     );
     const skillLevelMatch =
       skillLevelRankings[exercise.difficulty] <= skillLevelRankings[skillLevel];
-    const bodyweightMatch = exercise.is_body_weight === includeBodyWeight;
-    const explosiveMatch = exercise.is_explosive === includeExposive;
-    const carryingMatch = exercise.requires_walking_room === includeCarrying;
+    const bodyweightMatch = includeBodyWeight
+      ? true
+      : exercise.is_body_weight === includeBodyWeight;
+    const explosiveMatch = includeExposive
+      ? true
+      : exercise.is_explosive === includeExposive;
+    const carryingMatch = includeCarrying
+      ? true
+      : exercise.requires_walking_room === includeCarrying;
     return (
       muscleGroupsMatch &&
       skillLevelMatch &&

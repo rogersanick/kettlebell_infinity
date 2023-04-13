@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
 import Button from '@/components/buttons/Button';
 import { Footer } from '@/components/Footer';
@@ -8,7 +9,7 @@ import { NewWorkoutModal } from '@/components/NewWorkoutModal/NewWorkoutModal';
 import Seo from '@/components/Seo';
 import WorkoutTable from '@/components/WorkoutTable';
 
-import { Exercises, getExercises, WorkoutOverview } from '@/api/supabase';
+import { Exercises, getExercises } from '@/api/supabaseDB';
 
 /**
  * SVGR Support

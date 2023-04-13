@@ -1,8 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import { createClient } from '@supabase/supabase-js';
+import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
 import { Database } from '@/lib/database.types';
+
+import { Exercises } from '@/api/supabaseDB';
 
 // Initialize Supabase Client
 const supabase = createClient<Database>(
@@ -10,19 +13,7 @@ const supabase = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 );
 
-export const getExercises = () => {
-  return supabase
-    .from('exercises')
-    .select('*')
-    .then((res) => {
-      if (res.error) {
-        throw res.error;
-      } else {
-        return res.data;
-      }
-    });
-};
-
+// Get new workout overview
 type generateWorkoutType = (
   duration: number,
   muscle_groups: string[],
@@ -54,28 +45,25 @@ export const generateNewWorkout: generateWorkoutType = async (
   }
 };
 
-export const getMuscleGroups = () => {
-  return supabase
-    .from('muscle_groups')
-    .select('distinct unnest(muscle_groups) AS muscle_group')
-    .then((res) => {
-      if (res.error) {
-        throw res.error;
-      } else {
-        return res.data as string[];
-      }
-    });
+type selectExercisesType = (
+  exercises: Exercises,
+  retryCount?: number
+) => Promise<string[][]>;
+export const selectExercisesForSegment: selectExercisesType = async (
+  exercises,
+  retryCount = 0
+) => {
+  const res = await supabase.functions.invoke('generate_workout', {
+    body: JSON.stringify({
+      exercises,
+    }),
+  });
+  if (res.error && retryCount < 3) {
+    return (await selectExercisesForSegment(
+      exercises,
+      retryCount + 1
+    )) as string[][];
+  } else {
+    return res.data as string[][];
+  }
 };
-
-export type WorkoutOverview = {
-  title: string;
-  description: string;
-  duration: number;
-  segments: {
-    title: string;
-    type: 'AMRAP' | 'EMOM';
-    duration: number;
-  }[];
-};
-
-export type Exercises = Awaited<ReturnType<typeof getExercises>>;

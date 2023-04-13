@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { WorkoutOverview } from '@/api/supabase';
+import { WorkoutOverview } from '@/api/supabaseFunc';
 
 interface TimelineSegmentProps {
   durationPercentage: number;

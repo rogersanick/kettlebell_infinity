@@ -112,7 +112,7 @@ export const sanitizeAndCheckDuration = (extractedWorkout: any) => {
 }
 
 /** TYPE DEFINITIONS */
-interface WorkoutOverview {
+export interface WorkoutOverview {
   title: string;
   description: string;
   duration: number;
