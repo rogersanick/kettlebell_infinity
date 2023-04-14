@@ -8,7 +8,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { Configuration, OpenAIApi } from 'https://esm.sh/openai'
 import "https://deno.land/x/xhr@0.3.0/mod.ts"
 
-import { corsHeaders } from "../_shared/cors.js";
+import { corsHeaders } from "../_shared/cors.ts";
 
 const configuration = new Configuration({
   apiKey: Deno.env.get("OPENAI_API_KEY"),
@@ -25,17 +25,17 @@ serve(async (req: any) => {
   }
 
   try {
-    const { exercises } = await req.json()
+    const { segments, exercises } = await req.json()
 
     // Initial Prompt, get workout and segments
     const initialResponse = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{
-        role: "user", content: selectExercisesForSegmentsPrompt(exercises)
+        role: "user", content: selectExercisesForSegmentsPrompt(segments, exercises)
       }],
     });
 
-    const selectedExercises = JSON.parse(initialResponse.data.choices[0].message!.content!) as unknown as WorkoutOverview;
+    const selectedExercises = JSON.parse(initialResponse.data.choices[0].message!.content!) as unknown as string[][];
 
     return new Response(JSON.stringify(selectedExercises), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -46,20 +46,32 @@ export const generateNewWorkout: generateWorkoutType = async (
 };
 
 type selectExercisesType = (
+  workoutOverview: WorkoutOverview,
   exercises: Exercises,
   retryCount?: number
 ) => Promise<string[][]>;
 export const selectExercisesForSegment: selectExercisesType = async (
+  workoutOverview: WorkoutOverview,
   exercises,
   retryCount = 0
 ) => {
-  const res = await supabase.functions.invoke('generate_workout', {
+  const formattedSegments = workoutOverview.segments.map(
+    (segment) =>
+      `title: ${segment.title}, duration: ${segment.duration}, type: ${segment.type}`
+  );
+  const formattedExercises = exercises.map(
+    (exercise) =>
+      `title: ${exercise.title}, muscle_group: ${exercise.muscles_targeted}, skill_level: ${exercise.difficulty}`
+  );
+  const res = await supabase.functions.invoke('select_exercises', {
     body: JSON.stringify({
-      exercises,
+      segments: formattedSegments,
+      exercises: formattedExercises,
     }),
   });
   if (res.error && retryCount < 3) {
     return (await selectExercisesForSegment(
+      workoutOverview,
       exercises,
       retryCount + 1
     )) as string[][];

@@ -1,0 +1,1 @@
+ALTER TABLE workouts RENAME COLUMN segmentsWithExercises TO segments_with_exercises;

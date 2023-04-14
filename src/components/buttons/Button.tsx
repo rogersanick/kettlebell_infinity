@@ -44,7 +44,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type='button'
         disabled={disabled}
         className={clsxm(
-          'inline-flex items-center rounded font-medium',
+          'inline-flex items-center rounded-lg',
           'focus-visible:ring-primary-500 focus:outline-none focus-visible:ring',
           'shadow-sm',
           'transition-colors duration-75',
@@ -57,23 +57,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           //#region  //*=========== Variants ===========
           [
             variant === 'primary' && [
-              'bg-primary-500 text-white',
-              'border-primary-600 border',
-              'hover:bg-primary-600 hover:text-white',
-              'active:bg-primary-700',
-              'disabled:bg-primary-700',
+              'bg-blue-500 text-white',
+              'border border-blue-600',
+              'hover:bg-blue-600 hover:text-white',
+              'active:bg-blue-700',
+              'disabled:bg-blue-700',
             ],
             variant === 'outline' && [
-              'text-primary-500',
-              'border-primary-500 border',
-              'hover:bg-primary-50 active:bg-primary-100 disabled:bg-primary-100',
+              'text-blue-500',
+              'border border-blue-500',
+              'hover:bg-blue-50 active:bg-blue-100 disabled:bg-blue-100',
               isDarkBg &&
                 'hover:bg-gray-900 active:bg-gray-800 disabled:bg-gray-800',
             ],
             variant === 'ghost' && [
-              'text-primary-500',
+              'text-blue-500',
               'shadow-none',
-              'hover:bg-primary-50 active:bg-primary-100 disabled:bg-primary-100',
+              'hover:bg-blue-50 active:bg-blue-100 disabled:bg-blue-100',
               isDarkBg &&
                 'hover:bg-gray-900 active:bg-gray-800 disabled:bg-gray-800',
             ],

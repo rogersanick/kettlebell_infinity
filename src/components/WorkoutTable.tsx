@@ -1,9 +1,7 @@
-import Button from '@/components/buttons/Button';
-
-import { WorkoutOverview } from '@/api/supabaseFunc';
+import { Workouts } from '@/api/supabaseDB';
 
 interface WorkoutTableProps {
-  workouts: WorkoutOverview[];
+  workouts: Workouts;
 }
 
 const WorkoutTable = (props: WorkoutTableProps) => {
@@ -13,35 +11,27 @@ const WorkoutTable = (props: WorkoutTableProps) => {
       <table className='w-full table-fixed text-left text-sm text-gray-500'>
         <thead className='sticky top-0 bg-gray-50 text-xs uppercase text-gray-700'>
           <tr className='sticky top-0'>
-            <th scope='col' className='px-4 py-2 text-left'>
+            <th scope='col' className='w-1/3 px-4 py-2 text-left'>
               Title
-            </th>
-            <th scope='col' className='px-4 py-2 text-left'>
-              Description
             </th>
             <th scope='col' className='px-4 py-2 text-left'>
               Duration
             </th>
             <th scope='col' className='px-4 py-2 text-left'>
-              Segments
+              Muscle Groups
             </th>
-            <th scope='col' className='px-4 py-2 text-left'></th>
           </tr>
         </thead>
         <tbody>
           {workouts.map((workout, index) => {
             return (
               <tr key={index} className='border-b bg-white hover:bg-gray-100'>
-                <td className='border px-4 py-2'>{workout.title}</td>
-                <td className='border px-4 py-2'>{workout.description}</td>
-                <td className='border px-4 py-2'>{workout.duration}</td>
-                <td className='whitespace-pre-wrap border px-4 py-2'>
-                  {workout.segments.map(
-                    (segment) => `${segment.title}: ${segment.duration} Mins\n`
-                  )}
+                <td className='border px-4 py-2 font-serif text-2xl text-black'>
+                  {workout.title}
                 </td>
-                <td className='whitespace-pre-wrap border px-4 py-2 text-center'>
-                  <Button>Start</Button>
+                <td className='border px-4 py-2'>{workout.duration}</td>
+                <td className='border px-4 py-2'>
+                  {workout.muscles_targeted.join(', ')}
                 </td>
               </tr>
             );

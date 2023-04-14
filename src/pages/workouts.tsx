@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
 import Button from '@/components/buttons/Button';
 import { Footer } from '@/components/Footer';
@@ -9,7 +8,12 @@ import { NewWorkoutModal } from '@/components/NewWorkoutModal/NewWorkoutModal';
 import Seo from '@/components/Seo';
 import WorkoutTable from '@/components/WorkoutTable';
 
-import { Exercises, getExercises } from '@/api/supabaseDB';
+import {
+  Exercises,
+  getExercises,
+  getWorkouts,
+  Workouts,
+} from '@/api/supabaseDB';
 
 /**
  * SVGR Support
@@ -25,8 +29,8 @@ import { Exercises, getExercises } from '@/api/supabaseDB';
 
 export default function HomePage() {
   // Existing workouts and exercises
-  const [workoutOverviews] = useState<WorkoutOverview[]>([]);
-  const [exercises, setExercises] = useState<Exercises | undefined>();
+  const [workouts, setWorkouts] = useState<Workouts>([]);
+  const [exercises, setExercises] = useState<Exercises>([]);
 
   // Creating a new workout
   const [newWorkoutModalOpen, setNewWorkoutModalOpen] = useState(false);
@@ -34,6 +38,9 @@ export default function HomePage() {
   useEffect(() => {
     getExercises().then((exercises) => {
       setExercises(exercises);
+    });
+    getWorkouts().then((workouts) => {
+      setWorkouts(workouts);
     });
   }, []);
 
@@ -47,7 +54,7 @@ export default function HomePage() {
         <NewWorkoutModal
           exercises={exercises || []}
           isOpen={newWorkoutModalOpen}
-          onClose={() => setNewWorkoutModalOpen(!newWorkoutModalOpen)}
+          closeModal={() => setNewWorkoutModalOpen(!newWorkoutModalOpen)}
         />
         <section className='bg-white'>
           <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
@@ -59,7 +66,7 @@ export default function HomePage() {
             </div>
             <div className='layout relative flex h-[80vh] flex-col items-center justify-between py-12 text-center'>
               <h1 className='mt-4'>Your Workouts</h1>
-              <WorkoutTable workouts={workoutOverviews} />
+              <WorkoutTable workouts={workouts} />
               <Button
                 className='mb-24 mt-6'
                 onClick={() => {

@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { WorkoutOverview } from '@/api/supabaseFunc';
+import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
 interface TimelineSegmentProps {
   durationPercentage: number;
@@ -9,6 +8,7 @@ interface TimelineSegmentProps {
   duration: number;
   selected?: boolean;
   onClick?: () => void;
+  showDetails?: boolean;
 }
 
 const TimelineSegment = ({
@@ -18,6 +18,7 @@ const TimelineSegment = ({
   duration,
   selected,
   onClick,
+  showDetails = true,
 }: TimelineSegmentProps) => {
   const segmentWidth = `${durationPercentage}%`;
   return (
@@ -26,13 +27,23 @@ const TimelineSegment = ({
       style={{ width: segmentWidth }}
       className={`flex flex-col items-center justify-center ${
         selected ? 'border-gray-400 bg-gray-200' : 'bg-gray-100'
-      } mx-1 h-32 min-w-[6rem] rounded-md border border-2 hover:bg-gray-200`}
+      } mx-1 ${
+        showDetails ? 'h-32' : 'h-16'
+      } min-w-[6rem] rounded-md border border-2 hover:bg-gray-200`}
     >
-      <div className='flex h-[50%] items-center justify-center'>
+      <div
+        className={`flex ${
+          showDetails ? 'h-[50%]' : 'h-full'
+        } items-center justify-center`}
+      >
         <div className='text-md font-semi-bold text-center align-middle'>{`${title}`}</div>
       </div>
-      <div className='h-[25%] align-middle text-xs text-gray-800'>{`${type}`}</div>
-      <div className='h-[25%] align-middle text-xs text-gray-800'>{`${duration}: Minutes`}</div>
+      {showDetails && (
+        <div className='h-[25%] align-middle text-xs text-gray-800'>{`${type}`}</div>
+      )}
+      {showDetails && (
+        <div className='h-[25%] align-middle text-xs text-gray-800'>{`${duration}: Minutes`}</div>
+      )}
     </div>
   );
 };
@@ -41,12 +52,14 @@ interface TimelineProps {
   workoutOverview: WorkoutOverview;
   selectedSegment?: string;
   setSelectedSegment: (segment: string) => void;
+  showDetails?: boolean;
 }
 
 const SegmentTimeline = ({
   workoutOverview,
   selectedSegment,
   setSelectedSegment,
+  showDetails = true,
 }: TimelineProps) => {
   const segments = workoutOverview.segments;
   const totalDuration = segments.reduce(
@@ -65,6 +78,7 @@ const SegmentTimeline = ({
           durationPercentage={(segment.duration / totalDuration) * 100}
           onClick={() => setSelectedSegment(segment.title)}
           selected={selectedSegment === segment.title}
+          showDetails={showDetails}
         />
       ))}
     </div>

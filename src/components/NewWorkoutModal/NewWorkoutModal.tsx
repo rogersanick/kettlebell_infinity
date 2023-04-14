@@ -5,25 +5,31 @@ import { WorkoutOverview } from 'supabase/functions/generate_workout';
 import {
   filteredExercisesForWorkoutOverview,
   getExercisesForWorkoutOverview,
+  getRandomValueFromArray,
+  replaceExerciseInSegment,
 } from '@/data_utils';
 
+import Button from '@/components/buttons/Button';
+import SpinRefreshSVG from '@/components/buttons/RefreshButton';
+import ExerciseLoadingIndicator from '@/components/ExerciseLoadingIndicator';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { NewWorkoutModalStepper } from '@/components/NewWorkoutModal/NewWorkoutModalStepper';
 import { SegmentTimeline } from '@/components/NewWorkoutModal/SegmentTimeline';
 
-import { Exercises } from '@/api/supabaseDB';
+import { Exercises, saveWorkout } from '@/api/supabaseDB';
 import { generateNewWorkout } from '@/api/supabaseFunc';
 
 interface NewWorkoutModalProps {
   isOpen: boolean;
   exercises: Exercises;
-  onClose: () => void;
+  closeModal: () => void;
 }
 
 export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
   // Basic props
-  const { isOpen, onClose, exercises } = props;
+  const { isOpen, closeModal, exercises } = props;
   const id = useId();
+  const id1 = useId();
 
   // Form Progress
   const [formStep, setFormStep] = useState(0);
@@ -31,10 +37,13 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
 
   // New Workout Overview Input
   const [duration, setDuration] = useState(20);
-  const [skillLevel, setSkillLevel] = useState('Beginner');
+  const [skillLevel, setSkillLevel] = useState<
+    'Beginner' | 'Intermediate' | 'Advanced'
+  >('Beginner');
   const [includeBodyWeight, setIncludeBodyWeight] = useState(false);
   const [includeExposive, setIncludeExposive] = useState(false);
   const [includeCarrying, setIncludeCarrying] = useState(false);
+  const [includeDoubleBells, setIncludeDoubleBells] = useState(false);
 
   const [selectedMuscleGroups, setSelectedMuscleGroups] = useState(
     [] as { value: string; label: string }[]
@@ -49,6 +58,18 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     ).map((muscle) => ({ value: muscle, label: muscle }))
   );
 
+  const [selectedWeights, setSelectedWeights] = useState(
+    [] as { value: number; label: string }[]
+  );
+  const [weights] = useState(
+    [4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48].map((weight) => {
+      return {
+        value: weight,
+        label: `${weight} KG, ${Math.round(2.2 * weight * 10) / 10} LB`,
+      };
+    })
+  );
+
   useEffect(() => {
     setMuscleGroups(
       Array.from(
@@ -61,14 +82,16 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     );
   }, [exercises]);
 
+  // New Workout Overview output
   const [newWorkoutOverview, setNewWorkoutOverview] =
     useState<WorkoutOverview>();
 
-  // Exercises per segment input
+  // Exercise Selection input
   const [selectedSegment, setSelectedSegment] = useState<string | undefined>();
-  const [exercisesForSegment, setExercisesForSegment] = useState(
-    {} as { [key: string]: string[] }
-  );
+  const [selectedExercises, setSelectedExercises] = useState<
+    { [key: string]: number[] } | undefined
+  >();
+  const [filteredExercises, setFilteredExercises] = useState<Exercises>([]);
   useEffect(() => {
     if (!exercises) return;
     const filteredExercises = filteredExercisesForWorkoutOverview(
@@ -77,13 +100,15 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       skillLevel,
       includeBodyWeight,
       includeExposive,
-      includeCarrying
+      includeCarrying,
+      includeDoubleBells
     );
-    const newExercisesForSegment =
+    setFilteredExercises(filteredExercises);
+    const newselectedExercises =
       newWorkoutOverview &&
       getExercisesForWorkoutOverview(newWorkoutOverview, filteredExercises);
-    newExercisesForSegment &&
-      setExercisesForSegment(Object.assign({}, ...newExercisesForSegment));
+    newselectedExercises &&
+      setSelectedExercises(Object.assign({}, ...newselectedExercises));
   }, [
     newWorkoutOverview,
     exercises,
@@ -92,9 +117,8 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     includeBodyWeight,
     includeExposive,
     includeCarrying,
+    includeDoubleBells,
   ]);
-
-  // Output from phase 1
 
   // Form Page 1
   const newWorkoutOverviewFormBlock = () => (
@@ -126,13 +150,17 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       </label>
       <select
         value={skillLevel}
-        onChange={(e) => setSkillLevel(e.target.value)}
+        onChange={(e) =>
+          setSkillLevel(
+            e.target.value as 'Beginner' | 'Intermediate' | 'Advanced'
+          )
+        }
         id='skill-level'
         className='mb-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
       >
-        <option>Beginner</option>
-        <option>Intermediate</option>
-        <option>Advanced</option>
+        <option value='Beginner'>Beginner</option>
+        <option value='Intermediate'>Intermediate</option>
+        <option value='Advanced'>Advanced</option>
       </select>
       <label
         htmlFor='muscle-group'
@@ -142,6 +170,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       </label>
       {muscleGroups && (
         <Select
+          id='muscle-group'
           instanceId={id}
           className='mb-4'
           value={selectedMuscleGroups}
@@ -156,6 +185,30 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
           classNamePrefix='select'
         />
       )}
+      <label
+        htmlFor='weights'
+        className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+      >
+        What size kettlebells do you have?
+      </label>
+      {weights && (
+        <Select
+          id='weights'
+          instanceId={id1}
+          className='mb-4'
+          value={selectedWeights}
+          onChange={(e) =>
+            setSelectedWeights(e as { value: number; label: string }[])
+          }
+          isMulti
+          name='colors'
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          options={weights}
+          classNamePrefix='select'
+        />
+      )}
+
       <label className='relative mb-4 mt-4 inline-flex cursor-pointer items-center'>
         <input
           type='checkbox'
@@ -198,8 +251,32 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
           Include Carrying Exercises
         </span>
       </label>
-      <div className='flex items-center justify-center space-x-2 rounded-b p-6'>
-        <button
+      <label className='relative mb-4 inline-flex cursor-pointer items-center'>
+        <input
+          type='checkbox'
+          onChange={(e) =>
+            setIncludeDoubleBells(e.target.value === 'true' ? false : true)
+          }
+          value={includeDoubleBells.toString().toLowerCase()}
+          className='peer sr-only'
+        />
+        <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+        <span className='ml-3 text-sm font-medium text-gray-900 dark:text-gray-300'>
+          Include Double Bell Exercises
+        </span>
+      </label>
+      <div className='flex items-center justify-end space-x-2 rounded-b p-6'>
+        {newWorkoutOverview && (
+          <Button
+            onClick={() => {
+              setFormStep(formStep + 1);
+            }}
+            variant='ghost'
+          >
+            Proceed with previous
+          </Button>
+        )}
+        <Button
           onClick={async () => {
             setFormStep(formStep + 1);
             setIsLoading(true);
@@ -209,76 +286,170 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               skillLevel
             );
             setNewWorkoutOverview(newWorkout);
+            setSelectedSegment(newWorkout.segments[0].title);
             setIsLoading(false);
           }}
           data-modal-hide='defaultModal'
           type='button'
-          className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300'
+          variant='primary'
         >
           Generate Workout
-        </button>
+        </Button>
       </div>
     </div>
   );
 
   // Form page 2
-  const assignExercisesFormBlock = () => {
-    const exercisesForSelectedSegment =
-      selectedSegment &&
-      exercisesForSegment[selectedSegment]?.map((id) => {
-        return exercises?.find((e) => e.id === parseInt(id));
-      });
+  const confirmWorkoutOverviewFormBlock = () => {
     if (!newWorkoutOverview) return <div></div>;
     return (
       <div className='m-2 flex flex-col p-2'>
-        <div className='flex w-full flex-row'></div>
-        <h2>{`${newWorkoutOverview.title}`}</h2>
-        <h3>{`${newWorkoutOverview.duration} Minutes`}</h3>
-        <hr className='my-2' />
-        <div>{newWorkoutOverview?.description}</div>
-        <hr className='my-2' />
+        <h2 className='my-2 font-serif'>{`${newWorkoutOverview.title}`}</h2>
+        <h4>{`Duration: ${newWorkoutOverview.duration} minutes`}</h4>
+        <div className='my-4'>{newWorkoutOverview?.description}</div>
         <SegmentTimeline
           selectedSegment={selectedSegment}
           setSelectedSegment={(segment: string) => setSelectedSegment(segment)}
           workoutOverview={newWorkoutOverview}
         />
-        {exercisesForSelectedSegment && (
+        <div className='flex items-center justify-between space-x-2 rounded-b p-6'>
+          <Button
+            onClick={async () => {
+              setFormStep(formStep - 1);
+            }}
+            data-modal-hide='defaultModal'
+            type='button'
+            variant='ghost'
+          >
+            Go Back
+          </Button>
+          <Button
+            onClick={async () => {
+              setFormStep(formStep + 1);
+            }}
+            data-modal-hide='defaultModal'
+            type='button'
+            variant='primary'
+            className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300'
+          >
+            Choose Exercises
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  // Form page 3
+  const assignExercisesFormBlock = () => {
+    const exercisesForSelectedSegment =
+      selectedSegment &&
+      selectedExercises &&
+      selectedExercises[selectedSegment]?.map((id) => {
+        return exercises?.find((e) => e.id === id);
+      });
+    if (!newWorkoutOverview) return <div></div>;
+    return (
+      <div className='m-2 flex flex-col p-2'>
+        <h2 className='my-2 font-serif'>{`${newWorkoutOverview.title}`}</h2>
+        <SegmentTimeline
+          selectedSegment={selectedSegment}
+          setSelectedSegment={(segment: string) => setSelectedSegment(segment)}
+          workoutOverview={newWorkoutOverview}
+          showDetails={false}
+        />
+        {exercisesForSelectedSegment ? (
           <div>
             <hr className='my-4' />
             {/* List the selected exercises */}
             <div className='flex flex-col'>
-              {exercisesForSelectedSegment.map((exercise, index) => {
-                return (
-                  <div
-                    key={index}
-                    className='flex flex-row items-center justify-between'
-                  >
-                    <div>{exercise?.title}</div>
-                    <div>{2} Reps</div>
-                  </div>
-                );
-              })}
+              <table className='w-full table-fixed text-left text-sm text-gray-500'>
+                <thead className='sticky top-0 bg-gray-50 text-xs uppercase text-gray-700'>
+                  <tr className='sticky top-0'>
+                    <th scope='col' className='w-2/3 px-4 py-2'>
+                      Title
+                    </th>
+                    <th scope='col' className='px-4 py-2 text-end'>
+                      Reps
+                    </th>
+                    <th scope='col' className='px-4 py-2 text-end'>
+                      KG/LB
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {exercisesForSelectedSegment.map((exercise, index) => {
+                    if (!exercise) return <div></div>;
+                    return (
+                      <tr
+                        key={index}
+                        className='border-b bg-white hover:bg-gray-100'
+                      >
+                        <td className='border px-4 py-2'>
+                          <div className='flex flex-row items-center justify-between'>
+                            <div className='pr-2'>{exercise?.title}</div>
+                            <SpinRefreshSVG
+                              onClick={() => {
+                                setSelectedExercises(
+                                  replaceExerciseInSegment(
+                                    selectedSegment,
+                                    exercise.id,
+                                    getRandomValueFromArray(filteredExercises)
+                                      .id,
+                                    selectedExercises
+                                  )
+                                );
+                              }}
+                            />
+                          </div>
+                        </td>
+                        <td className='border px-4 py-2 text-end'>2</td>
+                        <td className='border px-4 py-2 text-end'>2</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
             <hr className='my-4' />
           </div>
+        ) : (
+          <ExerciseLoadingIndicator />
         )}
         <div className='flex items-center justify-between space-x-2 rounded-b p-6'>
-          <button
+          <Button
             onClick={async () => {
               setFormStep(formStep - 1);
             }}
             data-modal-hide='defaultModal'
             type='button'
-            className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300'
-          >{`< Go Back`}</button>
-          <button
+            variant='ghost'
+          >
+            Go Back
+          </Button>
+          <Button
             onClick={async () => {
-              setFormStep(formStep - 1);
+              setIsLoading(true);
+              selectedExercises &&
+                (await saveWorkout(
+                  newWorkoutOverview,
+                  skillLevel,
+                  includeBodyWeight,
+                  includeExposive,
+                  includeDoubleBells,
+                  includeCarrying,
+                  selectedMuscleGroups.map((mg) => mg.value),
+                  selectedExercises
+                ));
+              setIsLoading(false);
+              closeModal();
             }}
             data-modal-hide='defaultModal'
             type='button'
+            variant='primary'
             className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300'
-          >{`Confirm Workout >`}</button>
+          >
+            Save Workout
+          </Button>
         </div>
       </div>
     );
@@ -290,6 +461,8 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     } else if (formStep === 0) {
       return newWorkoutOverviewFormBlock();
     } else if (formStep === 1) {
+      return confirmWorkoutOverviewFormBlock();
+    } else if (formStep === 2) {
       return assignExercisesFormBlock();
     }
   };
@@ -311,7 +484,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               New AI Generated Workout
             </h3>
             <button
-              onClick={onClose}
+              onClick={closeModal}
               type='button'
               className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white'
               data-modal-hide='defaultModal'
@@ -332,7 +505,8 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               <span className='sr-only'>Close modal</span>
             </button>
           </div>
-          <NewWorkoutModalStepper step={formStep} length={3} />
+          <NewWorkoutModalStepper step={formStep} />
+          <hr className='mb-2' />
           {getFormBlock()}
         </div>
       </div>

@@ -8,7 +8,7 @@ export const Footer = () => {
         <p className='px-1 font-serif text-red-500'>FIGHT</p>
         <p className='font-serif'>IQ</p>
       </UnderlineLink>
-      <div>
+      <div className='mt-2'>
         © {new Date().getFullYear()} By{' '}
         <UnderlineLink href='https://www.linkedin.com/in/nickrogers-se/'>
           Nick Rogers

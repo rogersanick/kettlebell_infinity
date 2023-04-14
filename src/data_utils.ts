@@ -1,5 +1,6 @@
+import { WorkoutOverview } from 'supabase/functions/generate_workout';
+
 import { Exercises } from '@/api/supabaseDB';
-import { WorkoutOverview } from '@/api/supabaseFunc';
 
 const skillLevelRankings = {
   Beginner: 0,
@@ -13,7 +14,8 @@ export const filteredExercisesForWorkoutOverview = (
   skillLevel: string,
   includeBodyWeight: boolean,
   includeExposive: boolean,
-  includeCarrying: boolean
+  includeCarrying: boolean,
+  includeDoubleBells: boolean
 ) => {
   return exercises?.filter((exercise) => {
     const muscleGroupsMatch = exercise.muscles_targeted.some((muscle) =>
@@ -32,12 +34,16 @@ export const filteredExercisesForWorkoutOverview = (
     const carryingMatch = includeCarrying
       ? true
       : exercise.requires_walking_room === includeCarrying;
+    const doubleBellsMatch = includeDoubleBells
+      ? true
+      : exercise.requires_double_bells === includeDoubleBells;
     return (
       muscleGroupsMatch &&
       skillLevelMatch &&
       bodyweightMatch &&
       explosiveMatch &&
-      carryingMatch
+      carryingMatch &&
+      doubleBellsMatch
     );
   });
 };
@@ -45,7 +51,7 @@ export const filteredExercisesForWorkoutOverview = (
 const getExercisesForWorkoutOverview = (
   newWorkoutOverview: WorkoutOverview,
   filteredExercises: Exercises
-) => {
+): { [key: string]: number[] }[] => {
   return newWorkoutOverview?.segments.map((segment) => {
     if (segment.type === 'EMOM') {
       return {
@@ -67,7 +73,22 @@ const getExercisesForWorkoutOverview = (
   });
 };
 
-function getRandomValuesFromArray<T>(arr: T[], numValues: number): T[] {
+const replaceExerciseInSegment = (
+  selectedSegment: string,
+  oldExerciseId: number,
+  newExerciseId: number,
+  segmentExercises: { [key: string]: number[] }
+) => {
+  const newSegmentExercises = { ...segmentExercises };
+  const oldExercises = newSegmentExercises[selectedSegment];
+  const oldExerciseIndex = oldExercises.findIndex(
+    (exercise) => exercise === oldExerciseId
+  );
+  oldExercises[oldExerciseIndex] = newExerciseId;
+  return newSegmentExercises;
+};
+
+export function getRandomValuesFromArray<T>(arr: T[], numValues: number): T[] {
   const randomValues: T[] = [];
   while (randomValues.length < numValues) {
     const randomIndex = Math.floor(Math.random() * arr.length);
@@ -79,9 +100,14 @@ function getRandomValuesFromArray<T>(arr: T[], numValues: number): T[] {
   return randomValues;
 }
 
+export function getRandomValueFromArray<T>(arr: T[]): T {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
+}
+
 function getRandomInt(min: number, max: number): number {
   const range = max - min + 1;
   return Math.floor(Math.random() * range) + min;
 }
 
-export { getExercisesForWorkoutOverview };
+export { getExercisesForWorkoutOverview, replaceExerciseInSegment };

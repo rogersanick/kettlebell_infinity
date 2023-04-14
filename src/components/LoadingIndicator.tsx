@@ -85,7 +85,7 @@ const LoadingIndicator = () => {
         ></path>
       </svg>
       <span className='sr-only'>Loading...</span>
-      <span className='mt-6 h-1/6 w-5/6 text-center'>
+      <span className='mt-12 h-1/6 w-5/6 text-center'>
         {loadingMessages[loadingMessageIndex]}
       </span>
     </div>

@@ -66,6 +66,7 @@ export const generateWorkoutOverviewPrompt = (duration: number, muscle_groups: s
       The description should be a short paragraph. 
       Segment titles must be abstract and must NOT mention a specific exercise.
       Segments should be 8 minutes on average and must be at least 5 minutes.
+      Longer workout durations should have longer segment durations.
       Only respond with valid JSON conforming to the Typescript type inputted below. 
       The duration of the workout is: ${duration}.
       
@@ -90,24 +91,24 @@ export const generateWorkoutOverviewPrompt = (duration: number, muscle_groups: s
 
 export const sanitizeAndCheckDuration = (extractedWorkout: any) => {
   return `
-    Adjust this input: ${JSON.stringify(extractedWorkout)} as follows:
-    - segments MUST be longer than 5 minutes.
-    - segment durations are varied, but sum to the duration of the workout. 
+    Only respond with edited JSON conforming to the type below:
 
-    Only respond with the adjusted JSON conforming to the type below:
-
-    Typescript Type: """
-    interface WorkoutOverview {
-      title: string;
-      description: string;
-      duration: number;
-      segments: {
+      Typescript Type: """
+      interface WorkoutOverview {
         title: string;
-        type: "AMRAP" | "EMOM"
-        duration: number
-      }[]
-    }
-  “””
+        description: string;
+        duration: number;
+        segments: {
+          title: string;
+          type: "AMRAP" | "EMOM"
+          duration: number
+        }[]
+      }
+    “””
+
+    Adjust this input: ${JSON.stringify(extractedWorkout)} with the following instructions:
+    1. segments MUST be longer than 5 minutes.
+    2. Segment durations MUST sum to the workout duration. Remove or add segments as needed. 
   `
 }
 
