@@ -1,6 +1,5 @@
-import { WorkoutOverview } from 'supabase/functions/generate_workout';
-
 import { Exercises, WorkoutSegmentsJSONRepresentation } from '@/api/supabaseDB';
+import { WorkoutOverview } from '@/api/supabaseFunc';
 
 const skillLevelRankings = {
   Beginner: 0,

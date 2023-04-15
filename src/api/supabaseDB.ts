@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
-import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
 import { Database } from '@/lib/database.types';
+
+import { WorkoutOverview } from '@/api/supabaseFunc';
 
 // Initialize Supabase Client
 const supabase = createClient<Database>(

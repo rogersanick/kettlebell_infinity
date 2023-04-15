@@ -125,6 +125,8 @@ export default function DoTheWorkout() {
                     )}
                     {currentSegment && (
                       <SegmentInfoDisplay
+                        currentTime={seconds}
+                        playing={playing}
                         segmentTitle={currentSegment}
                         segment={
                           (

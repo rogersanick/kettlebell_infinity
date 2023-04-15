@@ -1,7 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import { createClient } from '@supabase/supabase-js';
-import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
 import { Database } from '@/lib/database.types';
 
@@ -92,3 +91,15 @@ export const selectExercisesForSegment: selectExercisesType = async (
     return res.data as string[][];
   }
 };
+
+/** TYPE DEFINITIONS */
+export interface WorkoutOverview {
+  title: string;
+  description: string;
+  duration: number;
+  segments: {
+    title: string;
+    type: 'AMRAP' | 'EMOM';
+    duration: number;
+  }[];
+}

@@ -1,6 +1,5 @@
 import { useEffect, useId, useState } from 'react';
 import Select from 'react-select';
-import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
 import {
   filteredExercisesForWorkoutOverview,
@@ -21,7 +20,7 @@ import {
   saveWorkout,
   WorkoutSegmentsJSONRepresentation,
 } from '@/api/supabaseDB';
-import { generateNewWorkout } from '@/api/supabaseFunc';
+import { generateNewWorkout, WorkoutOverview } from '@/api/supabaseFunc';
 
 interface NewWorkoutModalProps {
   isOpen: boolean;
