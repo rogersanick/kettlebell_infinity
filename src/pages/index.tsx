@@ -27,7 +27,7 @@ export default function HomePage() {
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
       <main>
-        <section className='bg-white'>
+        <section className='overflow-x-hidden bg-white'>
           <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
             <div className='mt-16 flex flex-col'>
               <div className='font-sans text-7xl'>∞</div>

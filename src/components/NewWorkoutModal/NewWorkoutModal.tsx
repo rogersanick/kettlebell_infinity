@@ -16,7 +16,11 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 import { NewWorkoutModalStepper } from '@/components/NewWorkoutModal/NewWorkoutModalStepper';
 import { SegmentTimeline } from '@/components/NewWorkoutModal/SegmentTimeline';
 
-import { Exercises, saveWorkout } from '@/api/supabaseDB';
+import {
+  Exercises,
+  saveWorkout,
+  SegmentJSONRepresentation,
+} from '@/api/supabaseDB';
 import { generateNewWorkout } from '@/api/supabaseFunc';
 
 interface NewWorkoutModalProps {
@@ -89,7 +93,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
   // Exercise Selection input
   const [selectedSegment, setSelectedSegment] = useState<string | undefined>();
   const [selectedExercises, setSelectedExercises] = useState<
-    { [key: string]: number[] } | undefined
+    SegmentJSONRepresentation | undefined
   >();
   const [filteredExercises, setFilteredExercises] = useState<Exercises>([]);
   useEffect(() => {
@@ -120,20 +124,34 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     includeDoubleBells,
   ]);
 
+  // Reset state on close
+  const resetState = () => {
+    setFormStep(0);
+    setDuration(20);
+    setSkillLevel('Beginner');
+    setIncludeBodyWeight(false);
+    setIncludeExposive(false);
+    setIncludeCarrying(false);
+    setIncludeDoubleBells(false);
+    setSelectedMuscleGroups([]);
+    setSelectedWeights([]);
+    setNewWorkoutOverview(undefined);
+    setSelectedSegment(undefined);
+    setSelectedExercises(undefined);
+    setFilteredExercises([]);
+  };
+
   // Form Page 1
   const newWorkoutOverviewFormBlock = () => (
     <div className='m-2 flex flex-col p-2'>
-      <label
-        htmlFor='duration'
-        className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-      >
+      <label className='mb-2 text-sm font-medium text-gray-900 dark:text-white'>
         How long do you want to workout for?
       </label>
       <select
         value={duration}
         onChange={(e) => setDuration(parseInt(e.target.value))}
         id='duration'
-        className='mb-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
+        className='mb-4 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
       >
         <option value={15}>15 Minutes</option>
         <option value={20}>20 Minutes</option>
@@ -156,7 +174,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
           )
         }
         id='skill-level'
-        className='mb-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
+        className='mb-4 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
       >
         <option value='Beginner'>Beginner</option>
         <option value='Intermediate'>Intermediate</option>
@@ -164,7 +182,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
       </select>
       <label
         htmlFor='muscle-group'
-        className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+        className='mb-2 text-sm font-medium text-gray-900 dark:text-white'
       >
         What muscle groups would you like to target?
       </label>
@@ -304,8 +322,27 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     if (!newWorkoutOverview) return <div></div>;
     return (
       <div className='m-2 flex flex-col p-2'>
-        <h2 className='my-2 font-serif'>{`${newWorkoutOverview.title}`}</h2>
-        <h4>{`Duration: ${newWorkoutOverview.duration} minutes`}</h4>
+        <div className='flex flex-row items-center justify-between'>
+          <div className='flex flex-col'>
+            <h2 className='my-2 font-serif'>{`${newWorkoutOverview.title}`}</h2>
+            <h4>{`Duration: ${newWorkoutOverview.duration} minutes`}</h4>
+          </div>
+          <SpinRefreshSVG
+            large
+            onClick={async () => {
+              setIsLoading(true);
+              const newWorkout = await generateNewWorkout(
+                duration,
+                selectedMuscleGroups.map((smg) => smg.value),
+                skillLevel
+              );
+              setNewWorkoutOverview(newWorkout);
+              setSelectedSegment(newWorkout.segments[0].title);
+              setIsLoading(false);
+            }}
+          />
+        </div>
+
         <div className='my-4'>{newWorkoutOverview?.description}</div>
         <SegmentTimeline
           selectedSegment={selectedSegment}
@@ -344,7 +381,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     const exercisesForSelectedSegment =
       selectedSegment &&
       selectedExercises &&
-      selectedExercises[selectedSegment]?.map((id) => {
+      selectedExercises[selectedSegment]?.exerciseIds.map((id) => {
         return exercises?.find((e) => e.id === id);
       });
     if (!newWorkoutOverview) return <div></div>;
@@ -441,6 +478,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
                   selectedExercises
                 ));
               setIsLoading(false);
+              resetState();
               closeModal();
             }}
             data-modal-hide='defaultModal'

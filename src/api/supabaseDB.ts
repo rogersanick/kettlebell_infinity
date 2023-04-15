@@ -35,6 +35,21 @@ export const getWorkouts = () => {
     });
 };
 
+export const getWorkout = (id: string) => {
+  return supabase
+    .from('workouts')
+    .select('*')
+    .limit(1)
+    .eq('id', id)
+    .then((res) => {
+      if (res.error) {
+        throw res.error;
+      } else {
+        return res.data[0];
+      }
+    });
+};
+
 export const saveWorkout = (
   workoutOverview: WorkoutOverview,
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced',
@@ -43,7 +58,12 @@ export const saveWorkout = (
   requiresDoubleBells: boolean,
   requiresWalkingRoom: boolean,
   musclesTargeted: string[],
-  selectedExercises: { [key: string]: number[] }
+  selectedExercises: {
+    [key: string]: {
+      duration: number;
+      exerciseIds: number[];
+    };
+  }
 ) => {
   return supabase
     .from('workouts')
@@ -68,6 +88,20 @@ export const saveWorkout = (
     });
 };
 
+export const deleteWorkout = (id: number) => {
+  return supabase
+    .from('workouts')
+    .delete()
+    .eq('id', id)
+    .then((res) => {
+      if (res.error) {
+        throw res.error;
+      } else {
+        return res.data;
+      }
+    });
+};
+
 export const getMuscleGroups = () => {
   return supabase
     .from('muscle_groups')
@@ -81,5 +115,13 @@ export const getMuscleGroups = () => {
     });
 };
 
+export type Workout = Awaited<ReturnType<typeof getWorkout>>;
+export type SegmentJSONRepresentation = {
+  [key: string]: {
+    exerciseIds: number[];
+    type: 'AMRAP' | 'EMOM';
+    duration: number;
+  };
+};
 export type Workouts = Awaited<ReturnType<typeof getWorkouts>>;
 export type Exercises = Awaited<ReturnType<typeof getExercises>>;

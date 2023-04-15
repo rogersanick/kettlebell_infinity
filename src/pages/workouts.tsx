@@ -34,13 +34,19 @@ export default function HomePage() {
 
   // Creating a new workout
   const [newWorkoutModalOpen, setNewWorkoutModalOpen] = useState(false);
-
-  useEffect(() => {
-    getExercises().then((exercises) => {
-      setExercises(exercises);
-    });
+  const getNewWorkouts = () =>
     getWorkouts().then((workouts) => {
       setWorkouts(workouts);
+    });
+
+  const handleRemoveWorkout = (id: number) => {
+    setWorkouts(workouts.filter((workout) => workout.id !== id));
+  };
+
+  useEffect(() => {
+    getNewWorkouts();
+    getExercises().then((exercises) => {
+      setExercises(exercises);
     });
   }, []);
 
@@ -54,21 +60,28 @@ export default function HomePage() {
         <NewWorkoutModal
           exercises={exercises || []}
           isOpen={newWorkoutModalOpen}
-          closeModal={() => setNewWorkoutModalOpen(!newWorkoutModalOpen)}
+          closeModal={async () => {
+            await getNewWorkouts();
+            setNewWorkoutModalOpen(!newWorkoutModalOpen);
+          }}
         />
         <section className='bg-white'>
-          <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
+          <div className='layout relative flex min-h-screen flex-col items-center text-center'>
             <div className='flex w-full flex-row justify-between self-start px-6'>
               <button type='button' onClick={() => router.back()}>
                 {`< Go Back`}
               </button>
               <div className='text-5xl'>∞</div>
             </div>
-            <div className='layout relative flex h-[80vh] flex-col items-center justify-between py-12 text-center'>
-              <h1 className='mt-4'>Your Workouts</h1>
-              <WorkoutTable workouts={workouts} />
+            <div className='layout relative flex h-[80vh] flex-col items-center justify-between text-center'>
+              <h1 className='my-8'>Your Workouts</h1>
+              <WorkoutTable
+                workouts={workouts}
+                refreshWorkouts={() => getNewWorkouts()}
+                removeWorkoutFromTable={handleRemoveWorkout}
+              />
               <Button
-                className='mb-24 mt-6'
+                className='mt-6'
                 onClick={() => {
                   setNewWorkoutModalOpen(true);
                 }}

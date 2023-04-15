@@ -41,6 +41,19 @@ export const generateNewWorkout: generateWorkoutType = async (
       retryCount + 1
     )) as WorkoutOverview;
   } else {
+    const workout = res.data as WorkoutOverview;
+    const segmentsToRender = [];
+    const segments = workout.segments;
+    let duration = 0;
+    for (let i = 0; i < segments.length; i++) {
+      if (duration + segments[i].duration <= workout.duration) {
+        segmentsToRender.push(segments[i]);
+        duration += segments[i].duration;
+      } else {
+        break;
+      }
+    }
+    res.data.segments = segmentsToRender;
     return res.data as WorkoutOverview;
   }
 };

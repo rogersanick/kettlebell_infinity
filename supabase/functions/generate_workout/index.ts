@@ -26,12 +26,13 @@ serve(async (req: any) => {
 
   try {
     const { duration, muscle_groups, skill_level } = await req.json()
+    const muscleGroupsOrFullBody = muscle_groups || ["full body"]
 
     // Initial Prompt, get workout and segments
     const initialResponse = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{
-        role: "user", content: generateWorkoutOverviewPrompt(duration, muscle_groups, skill_level)
+        role: "user", content: generateWorkoutOverviewPrompt(duration, muscleGroupsOrFullBody, skill_level)
       }],
     });
 
@@ -65,7 +66,10 @@ export const generateWorkoutOverviewPrompt = (duration: number, muscle_groups: s
       The title must be abstract and exciting. 
       The description should be a short paragraph. 
       Segment titles must be abstract and must NOT mention a specific exercise.
-      Segments should be 8 minutes on average and must be at least 5 minutes.
+      Workouts less than 20 minutes should have 2-3 segments.
+      Workouts between 20-40 minutes should have 3-4 segments.
+      Workouts between 40-60 minutes should have 4-5 segments.
+      Workouts between 60-90 minutes should have 5-6 segments.
       Longer workout durations should have longer segment durations.
       Only respond with valid JSON conforming to the Typescript type inputted below. 
       The duration of the workout is: ${duration}.
@@ -107,8 +111,9 @@ export const sanitizeAndCheckDuration = (extractedWorkout: any) => {
     “””
 
     Adjust this input: ${JSON.stringify(extractedWorkout)} with the following instructions:
-    1. segments MUST be longer than 5 minutes.
-    2. Segment durations MUST sum to the workout duration. Remove or add segments as needed. 
+    1. Titles should not be longer than 10 words.
+    2. Segments MUST be longer than 5 minutes.
+    3. Segment durations MUST sum to the workout duration. Remove or add segments as needed. 
   `
 }
 
@@ -119,8 +124,8 @@ export interface WorkoutOverview {
   duration: number;
   segments: {
     title: string;
-    type: "AMRAP" | "EMOM"
-    duration: number
+    type: "AMRAP" | "EMOM";
+    duration: number;
   }[]
 }
 

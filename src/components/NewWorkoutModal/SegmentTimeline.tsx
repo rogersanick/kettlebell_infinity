@@ -28,19 +28,19 @@ const TimelineSegment = ({
       className={`flex flex-col items-center justify-center ${
         selected ? 'border-gray-400 bg-gray-200' : 'bg-gray-100'
       } mx-1 ${
-        showDetails ? 'h-32' : 'h-16'
+        showDetails ? 'h-32' : 'h-24'
       } min-w-[6rem] rounded-md border border-2 hover:bg-gray-200`}
     >
       <div
         className={`flex ${
-          showDetails ? 'h-[50%]' : 'h-full'
+          showDetails ? 'h-[50%]' : 'h-[75%]'
         } items-center justify-center`}
       >
         <div className='text-md font-semi-bold text-center align-middle'>{`${title}`}</div>
       </div>
-      {showDetails && (
-        <div className='h-[25%] align-middle text-xs text-gray-800'>{`${type}`}</div>
-      )}
+
+      <div className='h-[25%] align-middle text-xs text-gray-800'>{`${type}`}</div>
+
       {showDetails && (
         <div className='h-[25%] align-middle text-xs text-gray-800'>{`${duration}: Minutes`}</div>
       )}

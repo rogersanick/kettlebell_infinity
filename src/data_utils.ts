@@ -1,6 +1,6 @@
 import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
-import { Exercises } from '@/api/supabaseDB';
+import { Exercises, SegmentJSONRepresentation } from '@/api/supabaseDB';
 
 const skillLevelRankings = {
   Beginner: 0,
@@ -51,21 +51,29 @@ export const filteredExercisesForWorkoutOverview = (
 const getExercisesForWorkoutOverview = (
   newWorkoutOverview: WorkoutOverview,
   filteredExercises: Exercises
-): { [key: string]: number[] }[] => {
+): SegmentJSONRepresentation[] => {
   return newWorkoutOverview?.segments.map((segment) => {
     if (segment.type === 'EMOM') {
       return {
-        [segment.title]: getRandomValuesFromArray(
-          filteredExercises,
-          getRandomInt(2, 3)
-        )?.map((exercise) => exercise.id),
+        [segment.title]: {
+          duration: segment.duration,
+          type: segment.type,
+          exerciseIds: getRandomValuesFromArray(
+            filteredExercises,
+            getRandomInt(2, 3)
+          )?.map((exercise) => exercise.id),
+        },
       };
     } else if (segment.type === 'AMRAP') {
       return {
-        [segment.title]: getRandomValuesFromArray(
-          filteredExercises,
-          getRandomInt(3, 5)
-        )?.map((exercise) => exercise.id),
+        [segment.title]: {
+          duration: segment.duration,
+          type: segment.type,
+          exerciseIds: getRandomValuesFromArray(
+            filteredExercises,
+            getRandomInt(3, 4)
+          )?.map((exercise) => exercise.id),
+        },
       };
     } else {
       throw new Error('Unknown workout segment type');
@@ -77,10 +85,10 @@ const replaceExerciseInSegment = (
   selectedSegment: string,
   oldExerciseId: number,
   newExerciseId: number,
-  segmentExercises: { [key: string]: number[] }
+  segmentExercises: SegmentJSONRepresentation
 ) => {
   const newSegmentExercises = { ...segmentExercises };
-  const oldExercises = newSegmentExercises[selectedSegment];
+  const oldExercises = newSegmentExercises[selectedSegment].exerciseIds;
   const oldExerciseIndex = oldExercises.findIndex(
     (exercise) => exercise === oldExerciseId
   );

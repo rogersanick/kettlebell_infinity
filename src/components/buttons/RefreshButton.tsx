@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 interface SpinRefreshSVGProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick: (...args: any[]) => void;
+  large?: boolean;
 }
 
 const SpinRefreshSVG = (props: SpinRefreshSVGProps) => {
@@ -18,11 +19,10 @@ const SpinRefreshSVG = (props: SpinRefreshSVGProps) => {
   };
 
   const spinClass = spin ? 'animate-spin' : '';
-
   return (
     <div className='refresh-svg-container' onClick={handleClick}>
       <svg
-        className={`h-3 w-3 ${spinClass}`}
+        className={`${spinClass} ${props.large ? 'h-8 w-8' : 'h-3 w-3'}`}
         xmlns='http://www.w3.org/2000/svg'
         fill='#000000'
         height='800px'
