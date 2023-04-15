@@ -116,12 +116,14 @@ export const getMuscleGroups = () => {
 };
 
 export type Workout = Awaited<ReturnType<typeof getWorkout>>;
-export type SegmentJSONRepresentation = {
-  [key: string]: {
-    exerciseIds: number[];
-    type: 'AMRAP' | 'EMOM';
-    duration: number;
-  };
+export type WorkoutSegmentsJSONRepresentation = {
+  [key: string]: SegmentJSONRepresentation;
 };
+export type SegmentJSONRepresentation = {
+  exerciseIds: number[];
+  type: 'AMRAP' | 'EMOM';
+  duration: number;
+};
+
 export type Workouts = Awaited<ReturnType<typeof getWorkouts>>;
 export type Exercises = Awaited<ReturnType<typeof getExercises>>;

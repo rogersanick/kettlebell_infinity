@@ -19,7 +19,7 @@ import { SegmentTimeline } from '@/components/NewWorkoutModal/SegmentTimeline';
 import {
   Exercises,
   saveWorkout,
-  SegmentJSONRepresentation,
+  WorkoutSegmentsJSONRepresentation,
 } from '@/api/supabaseDB';
 import { generateNewWorkout } from '@/api/supabaseFunc';
 
@@ -93,7 +93,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
   // Exercise Selection input
   const [selectedSegment, setSelectedSegment] = useState<string | undefined>();
   const [selectedExercises, setSelectedExercises] = useState<
-    SegmentJSONRepresentation | undefined
+    WorkoutSegmentsJSONRepresentation | undefined
   >();
   const [filteredExercises, setFilteredExercises] = useState<Exercises>([]);
   useEffect(() => {

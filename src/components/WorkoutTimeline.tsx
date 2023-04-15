@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { SegmentJSONRepresentation, Workout } from '@/api/supabaseDB';
+import { Workout, WorkoutSegmentsJSONRepresentation } from '@/api/supabaseDB';
 
 interface Props {
   workout: Workout;
@@ -14,7 +14,8 @@ const WorkoutTimeline: React.FC<Props> = ({
   setCurrentSeconds,
 }) => {
   // Data and time processing
-  const segments = workout.segments_with_exercises as SegmentJSONRepresentation;
+  const segments =
+    workout.segments_with_exercises as WorkoutSegmentsJSONRepresentation;
   const segmentKeys = Object.keys(segments);
   const totalDuration = segmentKeys.reduce(
     (acc, seg) => acc + segments[seg].duration,

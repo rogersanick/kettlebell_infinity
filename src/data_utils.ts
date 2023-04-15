@@ -1,6 +1,6 @@
 import { WorkoutOverview } from 'supabase/functions/generate_workout';
 
-import { Exercises, SegmentJSONRepresentation } from '@/api/supabaseDB';
+import { Exercises, WorkoutSegmentsJSONRepresentation } from '@/api/supabaseDB';
 
 const skillLevelRankings = {
   Beginner: 0,
@@ -51,7 +51,7 @@ export const filteredExercisesForWorkoutOverview = (
 const getExercisesForWorkoutOverview = (
   newWorkoutOverview: WorkoutOverview,
   filteredExercises: Exercises
-): SegmentJSONRepresentation[] => {
+): WorkoutSegmentsJSONRepresentation[] => {
   return newWorkoutOverview?.segments.map((segment) => {
     if (segment.type === 'EMOM') {
       return {
@@ -85,7 +85,7 @@ const replaceExerciseInSegment = (
   selectedSegment: string,
   oldExerciseId: number,
   newExerciseId: number,
-  segmentExercises: SegmentJSONRepresentation
+  segmentExercises: WorkoutSegmentsJSONRepresentation
 ) => {
   const newSegmentExercises = { ...segmentExercises };
   const oldExercises = newSegmentExercises[selectedSegment].exerciseIds;

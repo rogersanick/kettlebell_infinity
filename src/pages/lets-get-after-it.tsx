@@ -5,17 +5,24 @@ import { Footer } from '@/components/Footer';
 import Layout from '@/components/layout/Layout';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import PlayButton from '@/components/PlayButton';
+import { SegmentInfoDisplay } from '@/components/SegmentInfoDisplay';
 import Seo from '@/components/Seo';
 import WorkoutTimeline from '@/components/WorkoutTimeline';
 
-import { Exercises, getExercises, getWorkout, Workout } from '@/api/supabaseDB';
+import {
+  Exercises,
+  getExercises,
+  getWorkout,
+  Workout,
+  WorkoutSegmentsJSONRepresentation,
+} from '@/api/supabaseDB';
 
-export default function HomePage() {
+export default function DoTheWorkout() {
   // Existing workouts and exercises
   const [isLoading, setIsLoading] = useState(true);
   const [_, setError] = useState<string | undefined>();
   const [workout, setWorkout] = useState<Workout | undefined>();
-  const [__, setExercises] = useState<Exercises>([]);
+  const [exercises, setExercises] = useState<Exercises>([]);
   const { query } = useRouter();
 
   // Timer
@@ -72,6 +79,27 @@ export default function HomePage() {
     }
   };
 
+  // Current segment selection
+  const [currentSegment, setCurrentSegment] = useState<string | undefined>(
+    undefined
+  );
+  useEffect(() => {
+    if (workout) {
+      const segments =
+        workout.segments_with_exercises as WorkoutSegmentsJSONRepresentation;
+      const segmentKeys = Object.keys(segments);
+      const index = getCurrentDurationIndex(
+        segmentKeys.map((seg) => {
+          return segments[seg].duration;
+        }),
+        seconds
+      );
+      if (index !== null) {
+        setCurrentSegment(segmentKeys[index]);
+      }
+    }
+  }, [seconds, workout]);
+
   const router = useRouter();
   return (
     <Layout>
@@ -95,6 +123,18 @@ export default function HomePage() {
                     {!playing && (
                       <PlayButton onClick={() => setPlaying(true)} />
                     )}
+                    {currentSegment && (
+                      <SegmentInfoDisplay
+                        segmentTitle={currentSegment}
+                        segment={
+                          (
+                            workout.segments_with_exercises as WorkoutSegmentsJSONRepresentation
+                          )[currentSegment]
+                        }
+                        exercises={exercises}
+                      />
+                    )}
+                    <div></div>
                     <WorkoutTimeline
                       setCurrentSeconds={handleClientTimeChange}
                       seconds={seconds}
@@ -110,4 +150,26 @@ export default function HomePage() {
       </main>
     </Layout>
   );
+}
+
+function getCurrentDurationIndex(
+  durationsInMinutes: number[],
+  targetInSeconds: number
+): number | null {
+  if (durationsInMinutes.length === 0 || targetInSeconds < 0) {
+    return null;
+  }
+
+  let elapsedSeconds = 0;
+
+  for (let index = 0; index < durationsInMinutes.length; index++) {
+    const durationInSeconds = durationsInMinutes[index] * 60;
+    elapsedSeconds += durationInSeconds;
+
+    if (targetInSeconds < elapsedSeconds) {
+      return index;
+    }
+  }
+
+  return null;
 }
