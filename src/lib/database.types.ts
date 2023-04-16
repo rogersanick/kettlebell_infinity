@@ -29,6 +29,7 @@ export interface Database {
           tagline: string;
           tips_and_tricks: string;
           title: string;
+          title_slug: string;
         };
         Insert: {
           created_at?: string | null;
@@ -49,6 +50,7 @@ export interface Database {
           tagline: string;
           tips_and_tricks: string;
           title: string;
+          title_slug: string;
         };
         Update: {
           created_at?: string | null;
@@ -69,6 +71,7 @@ export interface Database {
           tagline?: string;
           tips_and_tricks?: string;
           title?: string;
+          title_slug?: string;
         };
       };
       workouts: {

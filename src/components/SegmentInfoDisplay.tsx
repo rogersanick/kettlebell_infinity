@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { Exercises, SegmentJSONRepresentation } from '@/api/supabaseDB';
 
 interface SegmentInfoDisplayProps {
+  videoRef: React.RefObject<HTMLVideoElement>;
+  pausePlayback: () => void;
+  exerciseURLs: { [key: string]: string };
   segmentTitle: string;
   segment: SegmentJSONRepresentation;
   exercises: Exercises;
@@ -11,6 +14,9 @@ interface SegmentInfoDisplayProps {
 }
 
 const SegmentInfoDisplay = ({
+  videoRef,
+  pausePlayback,
+  exerciseURLs,
   segmentTitle,
   segment,
   exercises,
@@ -26,12 +32,23 @@ const SegmentInfoDisplay = ({
     segment.exerciseIds[0]
   );
 
+  const getExerciseURL = (exerciseId: number) => {
+    const exercise = exercises.find((exercise) => exercise.id === exerciseId);
+    return exerciseURLs[exercise?.title_slug || ''];
+  };
+
   return (
     <div
       className={`flex h-full w-full flex-col items-center justify-center text-white ${
         playing ? 'opacity-100' : 'opacity-50'
       }`}
     >
+      <video
+        ref={videoRef}
+        onClick={pausePlayback}
+        className='autoPlay muted absolute top-0 h-[100vh] max-w-none'
+        src={getExerciseURL(selectedExercise)}
+      />
       <div
         className={`p-4 text-center font-serif text-2xl transition duration-500 ${
           hasStarted ? '-translate-y-8 transform' : ''
@@ -39,7 +56,6 @@ const SegmentInfoDisplay = ({
       >
         {segmentTitle}
       </div>
-
       <div
         className={`py-2 font-serif text-xl transition-opacity duration-500 ${
           hasStarted ? 'opacity-100' : 'opacity-0'

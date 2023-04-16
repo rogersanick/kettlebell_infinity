@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Footer } from '@/components/Footer';
 import Layout from '@/components/layout/Layout';
@@ -16,6 +16,7 @@ import {
   Workout,
   WorkoutSegmentsJSONRepresentation,
 } from '@/api/supabaseDB';
+import { getVideoURLs } from '@/api/supabaseStorage';
 
 export default function DoTheWorkout() {
   // Existing workouts and exercises
@@ -24,6 +25,38 @@ export default function DoTheWorkout() {
   const [workout, setWorkout] = useState<Workout | undefined>();
   const [exercises, setExercises] = useState<Exercises>([]);
   const { query } = useRouter();
+
+  // Start to load video files for the workout
+  const [videoURLs, setVideoURLs] = useState({} as { [key: string]: string });
+
+  useEffect(() => {
+    if (workout && exercises.length > 0) {
+      const segments =
+        workout.segments_with_exercises as WorkoutSegmentsJSONRepresentation;
+
+      const allExercises = Object.keys(segments).flatMap((key) => {
+        const segment = segments[key];
+        return segment.exerciseIds.map((exerciseId: number) =>
+          exercises.find((exercise) => exercise.id === exerciseId)
+        );
+      });
+
+      allExercises.map((exercise) => exercise?.title_slug);
+
+      getVideoURLs(allExercises.map((exercise) => exercise?.title_slug)).then(
+        (retrievedURLs) => {
+          const newVideoURLs = { ...videoURLs };
+          for (const [key, value] of Object.entries(retrievedURLs)) {
+            if (!newVideoURLs[key]) {
+              newVideoURLs[key] = value;
+            }
+          }
+          setVideoURLs(newVideoURLs);
+        }
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workout, exercises]);
 
   // Timer
   const [seconds, setSeconds] = useState(0);
@@ -100,6 +133,9 @@ export default function DoTheWorkout() {
     }
   }, [seconds, workout]);
 
+  // Ref for video
+  const vidRef = useRef<HTMLVideoElement | null>(null);
+
   const router = useRouter();
   return (
     <Layout>
@@ -121,10 +157,21 @@ export default function DoTheWorkout() {
                 workout && (
                   <>
                     {!playing && (
-                      <PlayButton onClick={() => setPlaying(true)} />
+                      <PlayButton
+                        onClick={() => {
+                          setPlaying(true);
+                          vidRef.current?.play();
+                        }}
+                      />
                     )}
                     {currentSegment && (
                       <SegmentInfoDisplay
+                        pausePlayback={() => {
+                          setPlaying(false);
+                          vidRef.current?.pause();
+                        }}
+                        videoRef={vidRef}
+                        exerciseURLs={videoURLs}
                         currentTime={seconds}
                         playing={playing}
                         segmentTitle={currentSegment}
@@ -136,7 +183,6 @@ export default function DoTheWorkout() {
                         exercises={exercises}
                       />
                     )}
-                    <div></div>
                     <WorkoutTimeline
                       setCurrentSeconds={handleClientTimeChange}
                       seconds={seconds}
