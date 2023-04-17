@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { type MediaPlayerElement } from 'vidstack';
 
-import { Footer } from '@/components/Footer';
 import Layout from '@/components/layout/Layout';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import PlayButton from '@/components/PlayButton';
@@ -134,8 +134,7 @@ export default function DoTheWorkout() {
   }, [seconds, workout]);
 
   // Ref for video
-  const vidRef = useRef<HTMLVideoElement | null>(null);
-
+  const vidRef = useRef<MediaPlayerElement | null>(null);
   const router = useRouter();
   return (
     <Layout>
@@ -145,7 +144,7 @@ export default function DoTheWorkout() {
         <section className='bg-black'>
           <div className='layout relative flex min-h-screen flex-col'>
             <div className='flex h-screen w-full flex-col justify-between'>
-              <div className='flex w-full flex-row justify-between self-start px-6 text-white'>
+              <div className='z-40 flex w-full flex-row justify-between self-start px-6 text-white'>
                 <button type='button' onClick={() => router.back()}>
                   {`< Go Back`}
                 </button>
@@ -156,6 +155,11 @@ export default function DoTheWorkout() {
               ) : (
                 workout && (
                   <>
+                    <WorkoutTimeline
+                      setCurrentSeconds={handleClientTimeChange}
+                      seconds={seconds}
+                      workout={workout}
+                    />
                     {!playing && (
                       <PlayButton
                         onClick={() => {
@@ -166,9 +170,24 @@ export default function DoTheWorkout() {
                     )}
                     {currentSegment && (
                       <SegmentInfoDisplay
-                        pausePlayback={() => {
-                          setPlaying(false);
-                          vidRef.current?.pause();
+                        pausePlayback={async () => {
+                          if (playing) {
+                            setPlaying(false);
+                            try {
+                              vidRef.current?.pause();
+                            } catch (err) {
+                              // eslint-disable-next-line no-console
+                              console.log(err);
+                            }
+                          } else {
+                            setPlaying(true);
+                            try {
+                              vidRef.current?.play();
+                            } catch (err) {
+                              // eslint-disable-next-line no-console
+                              console.log(err);
+                            }
+                          }
                         }}
                         videoRef={vidRef}
                         exerciseURLs={videoURLs}
@@ -183,15 +202,9 @@ export default function DoTheWorkout() {
                         exercises={exercises}
                       />
                     )}
-                    <WorkoutTimeline
-                      setCurrentSeconds={handleClientTimeChange}
-                      seconds={seconds}
-                      workout={workout}
-                    />
                   </>
                 )
               )}
-              <Footer />
             </div>
           </div>
         </section>

@@ -1,3 +1,8 @@
 html {
   overflow: hidden;
 }
+
+video {
+  max-width: none;
+  height: 110vh;
+}

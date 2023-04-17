@@ -2,27 +2,28 @@ import React, { useState } from 'react';
 
 interface SpinRefreshSVGProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClick: (...args: any[]) => void;
+  onClick?: (...args: any[]) => void;
   large?: boolean;
+  spinForever?: boolean;
 }
 
 const SpinRefreshSVG = (props: SpinRefreshSVGProps) => {
-  const { onClick } = props;
+  const { onClick, large, spinForever = false } = props;
   const [spin, setSpin] = useState(false);
 
   const handleClick = () => {
     setSpin(true);
     setTimeout(() => {
-      onClick();
+      onClick && onClick();
       setSpin(false);
     }, 500);
   };
 
-  const spinClass = spin ? 'animate-spin' : '';
+  const spinClass = spin || spinForever ? 'animate-spin' : '';
   return (
     <div className='refresh-svg-container' onClick={handleClick}>
       <svg
-        className={`${spinClass} ${props.large ? 'h-8 w-8' : 'h-3 w-3'}`}
+        className={`${spinClass} ${large ? 'h-8 w-8' : 'h-3 w-3'}`}
         xmlns='http://www.w3.org/2000/svg'
         fill='#000000'
         height='800px'

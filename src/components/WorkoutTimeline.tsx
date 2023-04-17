@@ -52,7 +52,7 @@ const WorkoutTimeline: React.FC<Props> = ({
   });
 
   return (
-    <div className='absolute bottom-20 flex w-full flex-col items-center'>
+    <div className='absolute bottom-2 z-40 flex w-full flex-col items-center'>
       <div
         className='relative mb-2 flex min-w-fit flex-row justify-end self-start rounded-lg border-slate-300'
         style={{ left: (seconds / totalDurationSeconds) * 95 + '%' }}
@@ -68,7 +68,7 @@ const WorkoutTimeline: React.FC<Props> = ({
           </div>
         </button>
       </div>
-      <div className='flex h-16 w-full flex-row rounded-lg bg-slate-300 md:h-24'>
+      <div className='flex h-12 w-full flex-row rounded-lg bg-slate-300 md:h-16'>
         {segmentKeys.map((segmentKey, index) => {
           const segment = segments[segmentKey];
           return (
@@ -77,7 +77,7 @@ const WorkoutTimeline: React.FC<Props> = ({
               style={{ width: (segment.duration / totalDuration) * 100 + '%' }}
               className='flex items-center justify-center rounded-md border border-2'
             >
-              <div className='text-md font-semi-bold text-center align-middle font-serif'>{`${segmentKey}`}</div>
+              <div className='text-md font-semi-bold truncate text-center align-middle font-serif'>{`${segmentKey}`}</div>
             </div>
           );
         })}

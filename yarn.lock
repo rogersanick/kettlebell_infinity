@@ -1619,6 +1619,11 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@maverick-js/signals@^5.9.1":
+  "integrity" "sha512-rqaaetjcqQQXbloejGYyHqN6i+cf2Lp88nw8qx2s86CD0X+1Tl/dq+I53wFM6VK6cvm925fQLszGG24AMSWAaw=="
+  "resolved" "https://registry.npmjs.org/@maverick-js/signals/-/signals-5.9.3.tgz"
+  "version" "5.9.3"
+
 "@next/env@13.3.0":
   "integrity" "sha512-AjppRV4uG3No7L1plinoTQETH+j2F10TEnrMfzbTUYwze5sBUPveeeBAPZPm8OkJZ1epq9OyYKhZrvbD6/9HCQ=="
   "resolved" "https://registry.npmjs.org/@next/env/-/env-13.3.0.tgz"
@@ -2061,7 +2066,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^18.0.31":
+"@types/react@*", "@types/react@^18.0.0", "@types/react@^18.0.31":
   "integrity" "sha512-EEG67of7DsvRDU6BLLI0p+k1GojDLz9+lZsnCpCRTa/lOokvyPBvp8S5x+A24hME3yyQuIipcP70KJ6H7Qupww=="
   "resolved" "https://registry.npmjs.org/@types/react/-/react-18.0.31.tgz"
   "version" "18.0.31"
@@ -2194,6 +2199,11 @@
   dependencies:
     "@typescript-eslint/types" "5.57.0"
     "eslint-visitor-keys" "^3.3.0"
+
+"@vidstack/react@^0.4.4":
+  "integrity" "sha512-JdZTyWvrKZY6v6VBxjhanhZZz0tL2TjxkY6D7qqlELTtM30qn70mqFq1ZRlBKl4NpwDfgXi43Sk7SOgJDVdKxQ=="
+  "resolved" "https://registry.npmjs.org/@vidstack/react/-/react-0.4.4.tgz"
+  "version" "0.4.4"
 
 "abab@^2.0.3", "abab@^2.0.5":
   "integrity" "sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q=="
@@ -5031,10 +5041,28 @@
   "resolved" "https://registry.npmjs.org/map-obj/-/map-obj-4.2.1.tgz"
   "version" "4.2.1"
 
+"maverick.js@^0.32.3":
+  "integrity" "sha512-2jzhv6nmK5mw6gEuoq5MeEGUBEhF5keZxi3w7/2oIB4NSvfCBBSOyKH9fBagpvAAOtT5ySgVAJlivg9vUBdJsQ=="
+  "resolved" "https://registry.npmjs.org/maverick.js/-/maverick.js-0.32.3.tgz"
+  "version" "0.32.3"
+  dependencies:
+    "@maverick-js/signals" "^5.9.1"
+    "type-fest" "^2.17.0"
+
 "mdn-data@2.0.14":
   "integrity" "sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow=="
   "resolved" "https://registry.npmjs.org/mdn-data/-/mdn-data-2.0.14.tgz"
   "version" "2.0.14"
+
+"media-captions@^0.0.7":
+  "integrity" "sha512-FUz0sVnMrhNHL3AmmDMKs3SUYnjxQ5Yg4N7ijJUTojAOqd4KYjPqSj2+dGBwAuU7gJsU5TgKziggsXU17EGPOw=="
+  "resolved" "https://registry.npmjs.org/media-captions/-/media-captions-0.0.7.tgz"
+  "version" "0.0.7"
+
+"media-icons@^0.4.2":
+  "integrity" "sha512-jrxoQzxsZFyzt6P3CoGZWa6FVKoR/Ii1plbVjtyTSyQGpeVWkJ++0oBAwGOv/F9mWRxmGkaQ04uEIKTFouRG1w=="
+  "resolved" "https://registry.npmjs.org/media-icons/-/media-icons-0.4.2.tgz"
+  "version" "0.4.2"
 
 "memoize-one@^6.0.0":
   "integrity" "sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw=="
@@ -6612,6 +6640,16 @@
   "resolved" "https://registry.npmjs.org/type-fest/-/type-fest-0.8.1.tgz"
   "version" "0.8.1"
 
+"type-fest@^2.17.0":
+  "integrity" "sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA=="
+  "resolved" "https://registry.npmjs.org/type-fest/-/type-fest-2.19.0.tgz"
+  "version" "2.19.0"
+
+"type-fest@^3.5.0":
+  "integrity" "sha512-FVNSzGQz9Th+/9R6Lvv7WIAkstylfHN2/JYxkyhhmKFYh9At2DST8t6L6Lref9eYO8PXFTfG9Sg1Agg0K3vq3Q=="
+  "resolved" "https://registry.npmjs.org/type-fest/-/type-fest-3.8.0.tgz"
+  "version" "3.8.0"
+
 "type@^1.0.1":
   "integrity" "sha512-+5nt5AAniqsCnu2cEQQdpzCAh33kVx8n0VoFidKpB1dVVLAN/F+bgVOqOJqOnEnrhp222clB5p3vUlD+1QAnfg=="
   "resolved" "https://registry.npmjs.org/type/-/type-1.2.0.tgz"
@@ -6730,6 +6768,16 @@
   dependencies:
     "spdx-correct" "^3.0.0"
     "spdx-expression-parse" "^3.0.0"
+
+"vidstack@^0.4.4", "vidstack@0.4.4":
+  "integrity" "sha512-kj+RJAqYfLd4ACMaPpU6QXwKmp/Oy84H1xeBgW3XSwMF2EYv1YVf0+FanqwaHl56pmZaUzzuhZlviqeqaU7duA=="
+  "resolved" "https://registry.npmjs.org/vidstack/-/vidstack-0.4.4.tgz"
+  "version" "0.4.4"
+  dependencies:
+    "maverick.js" "^0.32.3"
+    "media-captions" "^0.0.7"
+    "media-icons" "^0.4.2"
+    "type-fest" "^3.5.0"
 
 "w3c-hr-time@^1.0.2":
   "integrity" "sha512-z8P5DvDNjKDoFIHK7q8r8lackT6l+jo/Ye3HOle7l9nICP9lf1Ci25fy9vHd0JOWewkIFzXIEig3TdKT7JQ5fQ=="
