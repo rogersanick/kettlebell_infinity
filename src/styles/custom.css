@@ -1,8 +1,14 @@
 html {
   overflow: hidden;
+  height: -webkit-fill-available;
 }
 
 video {
   max-width: none;
   height: 110vh;
+}
+
+body {
+  overflow: hidden;
+  height: -webkit-fill-available;
 }
