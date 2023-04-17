@@ -40,9 +40,9 @@ const SegmentInfoDisplay = ({
   }, [segment]);
 
   return (
-    <>
+    <div className='absolute inset-0'>
       <div className='flex h-full w-full flex-col items-end justify-start text-white'>
-        <div className='border-grey-200 z-50 w-72 w-full rounded-lg bg-zinc-900 p-2 opacity-70'>
+        <div className='border-grey-200 z-50 mt-16 w-72 w-full rounded-lg bg-zinc-900 p-2 opacity-70'>
           <div className='text-center font-serif transition-opacity duration-500'>
             Exercises
           </div>
@@ -52,7 +52,7 @@ const SegmentInfoDisplay = ({
               return (
                 exercise && (
                   <Button
-                    className='mx-1 font-sans'
+                    className='mx-1 truncate font-sans'
                     variant='light'
                     onClick={() => {
                       setSelectedExercise(exercise.id);
@@ -81,13 +81,15 @@ const SegmentInfoDisplay = ({
             onClick={pausePlayback}
             ref={videoRef}
             src={getExerciseURL(selectedExercise)}
+            playsinline
+            muted
           >
             {/* ^ remove `controls` attribute if you're designing a custom UI */}
             <MediaOutlet />
           </MediaPlayer>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
