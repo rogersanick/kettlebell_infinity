@@ -85,6 +85,7 @@ const SegmentInfoDisplay = ({
         <div className='absolute z-50 h-full w-screen bg-gradient-to-l from-zinc-900 via-transparent via-15%' />
         {getExerciseURL(selectedExercise) && (
           <MediaPlayer
+            loop
             className='z-10'
             autoplay={playing}
             onClick={pausePlayback}
