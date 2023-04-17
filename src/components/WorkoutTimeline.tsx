@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
 
-import { Workout, WorkoutSegmentsJSONRepresentation } from '@/api/supabaseDB';
+import {
+  SegmentJSONRepresentation,
+  Workout,
+  WorkoutSegmentsJSONRepresentation,
+} from '@/api/supabaseDB';
 
 interface Props {
   workout: Workout;
   seconds: number;
   setCurrentSeconds: (duration: number) => void;
+  segment: SegmentJSONRepresentation;
 }
 
 const WorkoutTimeline: React.FC<Props> = ({
   workout,
   seconds,
   setCurrentSeconds,
+  segment,
 }) => {
   // Data and time processing
   const segments =
@@ -54,9 +60,10 @@ const WorkoutTimeline: React.FC<Props> = ({
   return (
     <div className='absolute bottom-2 z-40 flex w-full flex-col items-center'>
       <div
-        className='relative mb-2 flex min-w-fit flex-row justify-end self-start rounded-lg border-slate-300'
+        className='relative mb-2 flex min-w-fit flex-row flex-col items-center justify-end self-start rounded-lg border-slate-300'
         style={{ left: (seconds / totalDurationSeconds) * 95 + '%' }}
       >
+        <div className='font-serif text-white'>{segment.type}</div>
         <button
           onTouchStart={() => setIsDragging(true)}
           onTouchEnd={() => setIsDragging(false)}

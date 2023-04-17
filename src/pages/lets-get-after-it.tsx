@@ -143,7 +143,7 @@ export default function DoTheWorkout() {
       <main>
         <section className='bg-black'>
           <div className='layout relative flex min-h-screen flex-col'>
-            <div className='flex h-screen w-full flex-col justify-between'>
+            <div className='flex h-full w-full flex-col justify-between'>
               <div className='z-40 flex w-full flex-row justify-between self-start px-6 text-white'>
                 <button type='button' onClick={() => router.back()}>
                   {`< Go Back`}
@@ -153,12 +153,18 @@ export default function DoTheWorkout() {
               {isLoading ? (
                 <LoadingIndicator />
               ) : (
-                workout && (
+                workout &&
+                currentSegment && (
                   <>
                     <WorkoutTimeline
                       setCurrentSeconds={handleClientTimeChange}
                       seconds={seconds}
                       workout={workout}
+                      segment={
+                        (
+                          workout.segments_with_exercises as WorkoutSegmentsJSONRepresentation
+                        )[currentSegment]
+                      }
                     />
                     {!playing && (
                       <PlayButton
@@ -168,40 +174,38 @@ export default function DoTheWorkout() {
                         }}
                       />
                     )}
-                    {currentSegment && (
-                      <SegmentInfoDisplay
-                        pausePlayback={async () => {
-                          if (playing) {
-                            setPlaying(false);
-                            try {
-                              vidRef.current?.pause();
-                            } catch (err) {
-                              // eslint-disable-next-line no-console
-                              console.log(err);
-                            }
-                          } else {
-                            setPlaying(true);
-                            try {
-                              vidRef.current?.play();
-                            } catch (err) {
-                              // eslint-disable-next-line no-console
-                              console.log(err);
-                            }
+                    <SegmentInfoDisplay
+                      pausePlayback={async () => {
+                        if (playing) {
+                          setPlaying(false);
+                          try {
+                            vidRef.current?.pause();
+                          } catch (err) {
+                            // eslint-disable-next-line no-console
+                            console.log(err);
                           }
-                        }}
-                        videoRef={vidRef}
-                        exerciseURLs={videoURLs}
-                        currentTime={seconds}
-                        playing={playing}
-                        segmentTitle={currentSegment}
-                        segment={
-                          (
-                            workout.segments_with_exercises as WorkoutSegmentsJSONRepresentation
-                          )[currentSegment]
+                        } else {
+                          setPlaying(true);
+                          try {
+                            vidRef.current?.play();
+                          } catch (err) {
+                            // eslint-disable-next-line no-console
+                            console.log(err);
+                          }
                         }
-                        exercises={exercises}
-                      />
-                    )}
+                      }}
+                      videoRef={vidRef}
+                      exerciseURLs={videoURLs}
+                      currentTime={seconds}
+                      playing={playing}
+                      segmentTitle={currentSegment}
+                      segment={
+                        (
+                          workout.segments_with_exercises as WorkoutSegmentsJSONRepresentation
+                        )[currentSegment]
+                      }
+                      exercises={exercises}
+                    />
                   </>
                 )
               )}

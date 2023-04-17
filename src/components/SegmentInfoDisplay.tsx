@@ -52,7 +52,11 @@ const SegmentInfoDisplay = ({
               return (
                 exercise && (
                   <Button
-                    className='mx-1 truncate font-sans'
+                    className={`mx-1 truncate font-sans ${
+                      selectedExercise === exercise.id
+                        ? 'border border-4 border-red-500'
+                        : ''
+                    }`}
                     variant='light'
                     onClick={() => {
                       setSelectedExercise(exercise.id);
