@@ -1,4 +1,6 @@
+import { Footer } from '@/components/Footer';
 import Layout from '@/components/layout/Layout';
+import ButtonLink from '@/components/links/ButtonLink';
 import Seo from '@/components/Seo';
 
 /**
@@ -32,14 +34,14 @@ export default function HomePage() {
               <h1 className='mt-4 font-serif'>KettleBell Infinity</h1>
             </div>
             <div className='flex w-48 flex-row justify-between'>
-              {/* <ButtonLink className='mt-24' href='/sign-in' variant='light'>
+              <ButtonLink className='mt-24' href='/sign-in' variant='light'>
                 Sign In
               </ButtonLink>
               <ButtonLink className='mt-24' href='/sign-up' variant='light'>
                 Sign Up
-              </ButtonLink> */}
+              </ButtonLink>
             </div>
-            {/* <Footer /> */}
+            <Footer />
           </div>
         </section>
       </main>

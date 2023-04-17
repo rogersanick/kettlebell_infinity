@@ -68,7 +68,7 @@ const WorkoutTimeline: React.FC<Props> = ({
           </div>
         </button>
       </div>
-      <div className='flex h-12 w-full flex-row rounded-lg bg-slate-300 md:h-16'>
+      <div className='flex h-12 w-full flex-row rounded-lg bg-slate-300 md:h-16 landscape:h-8'>
         {segmentKeys.map((segmentKey, index) => {
           const segment = segments[segmentKey];
           return (
