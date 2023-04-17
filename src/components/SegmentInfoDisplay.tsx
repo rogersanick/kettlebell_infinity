@@ -46,7 +46,7 @@ const SegmentInfoDisplay = ({
           <div className='text-center font-serif transition-opacity duration-500'>
             Exercises
           </div>
-          <div className='max-width-full flex flex-row overflow-x-auto py-2 transition-opacity duration-500'>
+          <div className='max-width-full flex flex-row items-center justify-center overflow-x-auto py-2 transition-opacity duration-500'>
             {segment.exerciseIds.map((id, index) => {
               const exercise = exercises.find((exercise) => exercise.id === id);
               return (
