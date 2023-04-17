@@ -23,6 +23,8 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@supabase/auth-helpers-nextjs": "^0.6.0",
+    "@supabase/auth-helpers-react": "^0.3.1",
     "@supabase/supabase-js": "2.20.0",
     "@vidstack/react": "^0.4.4",
     "clsx": "^1.2.1",
