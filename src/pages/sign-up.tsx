@@ -67,7 +67,7 @@ export default function HomePage() {
               <div className='text-5xl'>∞</div>
             </div>
             <div className='flex h-[80vh] flex-col items-center justify-between py-24'>
-              <div className='m-2 mb-12 font-serif text-2xl'>Sign In</div>
+              <div className='m-2 mb-12 font-serif text-2xl'>Sign Up</div>
               <form onSubmit={handleSubmit} className='flex flex-col space-y-4'>
                 <input
                   type='email'
@@ -95,7 +95,7 @@ export default function HomePage() {
                   type='submit'
                   className='rounded bg-blue-500 p-2 text-white hover:bg-blue-700'
                 >
-                  Sign In
+                  Sign Up
                 </button>
                 {apiError && <p className='text-sm text-red-500'>{apiError}</p>}
               </form>
