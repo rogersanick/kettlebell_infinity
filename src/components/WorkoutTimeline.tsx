@@ -58,7 +58,7 @@ const WorkoutTimeline: React.FC<Props> = ({
   });
 
   return (
-    <div className='absolute bottom-2 z-40 flex w-full flex-col items-center'>
+    <div className='absolute bottom-6 z-40 flex w-full flex-col items-center opacity-70 portrait:bottom-16'>
       <div
         className='relative mb-2 flex min-w-fit flex-row flex-col items-center justify-end self-start rounded-lg border-slate-300'
         style={{ left: (seconds / totalDurationSeconds) * 95 + '%' }}

@@ -41,37 +41,42 @@ const SegmentInfoDisplay = ({
 
   return (
     <div className='absolute inset-0'>
-      <div className='flex h-full w-full flex-col items-end justify-start text-white'>
-        <div className='border-grey-200 z-50 mt-16 w-72 w-full rounded-lg bg-zinc-900 p-2 opacity-70'>
-          <div className='text-center font-serif transition-opacity duration-500'>
-            Exercises
-          </div>
-          <div className='max-width-full flex flex-row items-center justify-center overflow-x-auto py-2 transition-opacity duration-500'>
-            {segment.exerciseIds.map((id, index) => {
-              const exercise = exercises.find((exercise) => exercise.id === id);
-              return (
-                exercise && (
-                  <Button
-                    className={`mx-1 truncate font-sans ${
-                      selectedExercise === exercise.id
-                        ? 'border border-4 border-red-500'
-                        : ''
-                    }`}
-                    variant='light'
-                    onClick={() => {
-                      setSelectedExercise(exercise.id);
-                    }}
-                    onTouchStart={() => {
-                      setSelectedExercise(exercise.id);
-                    }}
-                    key={index}
-                  >{`${processExerciseName(exercise?.title)}`}</Button>
-                )
-              );
-            })}
+      <div className='flex w-full justify-center'>
+        <div className='flex h-full w-full flex-col items-end justify-start text-white landscape:w-2/3'>
+          <div className='border-grey-200 z-50 mt-16 w-72 w-full rounded-lg bg-zinc-900 p-1 opacity-70 landscape:mt-12'>
+            <div className='text-center font-serif transition-opacity duration-500 landscape:hidden'>
+              Exercises
+            </div>
+            <div className='max-width-full flex flex-row items-center justify-center overflow-x-auto transition-opacity duration-500'>
+              {segment.exerciseIds.map((id, index) => {
+                const exercise = exercises.find(
+                  (exercise) => exercise.id === id
+                );
+                return (
+                  exercise && (
+                    <Button
+                      className={`mx-1 truncate font-sans ${
+                        selectedExercise === exercise.id
+                          ? 'border border-4 border-red-500'
+                          : ''
+                      }`}
+                      variant='light'
+                      onClick={() => {
+                        setSelectedExercise(exercise.id);
+                      }}
+                      onTouchStart={() => {
+                        setSelectedExercise(exercise.id);
+                      }}
+                      key={index}
+                    >{`${processExerciseName(exercise?.title)}`}</Button>
+                  )
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
+
       <div
         onClick={pausePlayback}
         className='w-max-screen fixed inset-0 flex w-full items-center justify-center'
