@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 
 import { Footer } from '@/components/Footer';
 import Layout from '@/components/layout/Layout';
+import ButtonLink from '@/components/links/ButtonLink';
 import Seo from '@/components/Seo';
 
 import { signUpWithEmail } from '@/api/supabaseAuth';
@@ -14,6 +14,7 @@ export default function HomePage() {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [apiError, setApiError] = useState('');
 
   const validateEmail = (email: string) => {
     const re =
@@ -43,7 +44,11 @@ export default function HomePage() {
       setPasswordError('');
     }
 
-    signUpWithEmail(email, password).then((_) => {
+    signUpWithEmail(email, password).then(({ error }) => {
+      if (error) {
+        setApiError(error.message);
+        return;
+      }
       router.push('/workouts');
     });
   };
@@ -61,18 +66,8 @@ export default function HomePage() {
               </button>
               <div className='text-5xl'>∞</div>
             </div>
-            <div className='flex h-[80vh] flex-col items-center justify-center'>
-              <div className='m-8 flex flex-col font-serif'>
-                <div className='m-2'>Just here for a demo?</div>
-                <div className='m-2'>
-                  <Link className='underline' href='/sign-in'>
-                    Sign in
-                  </Link>{' '}
-                  with these credentials
-                </div>
-                <div className='m-2'>username: supabase@rocksmysocks.com</div>
-                <div className='m-2'>password: forrealforreal</div>
-              </div>
+            <div className='flex h-[80vh] flex-col items-center justify-between py-24'>
+              <div className='m-2 mb-12 font-serif text-2xl'>Sign In</div>
               <form onSubmit={handleSubmit} className='flex flex-col space-y-4'>
                 <input
                   type='email'
@@ -100,9 +95,15 @@ export default function HomePage() {
                   type='submit'
                   className='rounded bg-blue-500 p-2 text-white hover:bg-blue-700'
                 >
-                  Sign Up
+                  Sign In
                 </button>
+                {apiError && <p className='text-sm text-red-500'>{apiError}</p>}
               </form>
+              <div className='m-8 flex flex-col self-end font-serif text-xs'>
+                <ButtonLink variant='light' href='/sign-in' className='m-2'>
+                  Just here for a demo?
+                </ButtonLink>
+              </div>
             </div>
             <Footer />
           </div>

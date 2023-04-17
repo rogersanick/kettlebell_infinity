@@ -13,6 +13,7 @@ export default function HomePage() {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [apiError, setApiError] = useState('');
 
   const validateEmail = (email: string) => {
     const re =
@@ -42,8 +43,13 @@ export default function HomePage() {
       setPasswordError('');
     }
 
-    signInWithEmail(email, password).then((_) => {
-      router.push('/workouts');
+    signInWithEmail(email, password).then(({ error }) => {
+      if (error) {
+        setApiError(error.message);
+        return;
+      } else {
+        router.push('/workouts');
+      }
     });
   };
 
@@ -60,12 +66,8 @@ export default function HomePage() {
               </button>
               <div className='text-5xl'>∞</div>
             </div>
-            <div className='flex h-[80vh] flex-col items-center justify-center'>
-              <div className='m-8 flex flex-col font-serif'>
-                <div className='m-2'>Just here for a demo?</div>
-                <div className='m-2'>username: supabase@rocksmysocks.com</div>
-                <div className='m-2'>password: forrealforreal</div>
-              </div>
+            <div className='flex h-[80vh] flex-col items-center justify-between py-24'>
+              <div className='m-2 my-8 font-serif text-2xl'>Sign In</div>
               <form onSubmit={handleSubmit} className='flex flex-col space-y-4'>
                 <input
                   type='email'
@@ -95,7 +97,21 @@ export default function HomePage() {
                 >
                   Sign In
                 </button>
+                <button
+                  onClick={() => router.push('/sign-up')}
+                  className='rounded bg-blue-500 p-2 text-white hover:bg-blue-700'
+                >
+                  Sign Up
+                </button>
+                {apiError && <p className='text-sm text-red-500'>{apiError}</p>}
               </form>
+              <div className='m-8 flex flex-col self-end font-serif text-xs'>
+                <div className='m-2'>Just here for a demo?</div>
+                <div className='m-2'>username:</div>
+                <div className='m-2'>supabase@rocksmysocks.com</div>
+                <div className='m-2'>password:</div>
+                <div className='m-2'>forrealforreal</div>
+              </div>
             </div>
             <Footer />
           </div>

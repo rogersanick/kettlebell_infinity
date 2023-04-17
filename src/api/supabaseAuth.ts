@@ -9,21 +9,17 @@ const supabase = createClient<Database>(
 );
 
 const signUpWithEmail = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signUp({
+  return await supabase.auth.signUp({
     email,
     password,
   });
-  if (error) throw error;
-  return data;
 };
 
 async function signInWithEmail(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  return await supabase.auth.signInWithPassword({
     email,
     password,
   });
-  if (error) throw error;
-  return data;
 }
 
 export { signInWithEmail, signUpWithEmail };
