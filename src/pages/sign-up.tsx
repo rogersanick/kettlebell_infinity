@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 
@@ -5,7 +6,7 @@ import { Footer } from '@/components/Footer';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 
-import { signInWithEmail } from '@/api/supabaseAuth';
+import { signUpWithEmail } from '@/api/supabaseAuth';
 
 export default function HomePage() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function HomePage() {
       setPasswordError('');
     }
 
-    signInWithEmail(email, password).then((_) => {
+    signUpWithEmail(email, password).then((_) => {
       router.push('/workouts');
     });
   };
@@ -63,6 +64,12 @@ export default function HomePage() {
             <div className='flex h-[80vh] flex-col items-center justify-center'>
               <div className='m-8 flex flex-col font-serif'>
                 <div className='m-2'>Just here for a demo?</div>
+                <div className='m-2'>
+                  <Link className='underline' href='/sign-in'>
+                    Sign in
+                  </Link>{' '}
+                  with these credentials
+                </div>
                 <div className='m-2'>username: supabase@rocksmysocks.com</div>
                 <div className='m-2'>password: forrealforreal</div>
               </div>
@@ -93,7 +100,7 @@ export default function HomePage() {
                   type='submit'
                   className='rounded bg-blue-500 p-2 text-white hover:bg-blue-700'
                 >
-                  Sign In
+                  Sign Up
                 </button>
               </form>
             </div>
