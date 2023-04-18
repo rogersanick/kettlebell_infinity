@@ -1,5 +1,8 @@
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import {
+  createBrowserSupabaseClient,
+  Session,
+} from '@supabase/auth-helpers-nextjs';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { AppProps } from 'next/app';
 import { useState } from 'react';
@@ -16,9 +19,19 @@ config.autoAddCss = false;
  * ? `Layout` component is called in every page using `np` snippets. If you have consistent layout across all page, you can add it here too
  */
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({
+  Component,
+  pageProps,
+}: AppProps<{
+  initialSession: Session;
+}>) {
   // Create a new supabase browser client on every first render.
-  const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+  const [supabaseClient] = useState(() =>
+    createBrowserSupabaseClient({
+      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+    })
+  );
   return (
     <SessionContextProvider
       supabaseClient={supabaseClient}
