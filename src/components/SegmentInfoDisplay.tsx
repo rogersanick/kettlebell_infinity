@@ -54,21 +54,24 @@ const SegmentInfoDisplay = ({
                 );
                 return (
                   exercise && (
-                    <Button
-                      className={`mx-1 truncate font-sans ${
+                    <div
+                      className={`mx-1 truncate rounded-xl font-sans ${
                         selectedExercise === exercise.id
                           ? 'border border-4 border-red-500'
                           : ''
                       }`}
-                      variant='light'
-                      onClick={() => {
-                        setSelectedExercise(exercise.id);
-                      }}
-                      onTouchStart={() => {
-                        setSelectedExercise(exercise.id);
-                      }}
-                      key={index}
-                    >{`${processExerciseName(exercise?.title)}`}</Button>
+                    >
+                      <Button
+                        variant='light'
+                        onClick={() => {
+                          setSelectedExercise(exercise.id);
+                        }}
+                        onTouchStart={() => {
+                          setSelectedExercise(exercise.id);
+                        }}
+                        key={index}
+                      >{`${processExerciseName(exercise?.title)}`}</Button>
+                    </div>
                   )
                 );
               })}

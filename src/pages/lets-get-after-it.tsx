@@ -145,7 +145,13 @@ export default function DoTheWorkout() {
           <div className='layout relative flex min-h-screen flex-col'>
             <div className='flex h-full w-full flex-col justify-between'>
               <div className='z-40 flex w-full flex-row justify-between self-start px-6 text-white'>
-                <button type='button' onClick={() => router.back()}>
+                <button
+                  type='button'
+                  onClick={() => {
+                    vidRef.current?.destroy();
+                    router.back();
+                  }}
+                >
                   {`< Go Back`}
                 </button>
                 <div className='text-5xl'>∞</div>

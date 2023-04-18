@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   SegmentJSONRepresentation,
@@ -19,7 +19,6 @@ const WorkoutTimeline: React.FC<Props> = ({
   setCurrentSeconds,
   segment,
 }) => {
-  // Data and time processing
   const segments =
     workout.segments_with_exercises as WorkoutSegmentsJSONRepresentation;
   const segmentKeys = Object.keys(segments);
@@ -30,19 +29,22 @@ const WorkoutTimeline: React.FC<Props> = ({
   const totalDurationSeconds = totalDuration * 60;
 
   const [isDragging, setIsDragging] = useState(false);
+  const timelineRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (event: MouseEvent) => {
-    if (isDragging) {
-      const windowWidth = window.innerWidth;
-      const x = (event.clientX * 1.05) / windowWidth;
+    if (isDragging && timelineRef.current) {
+      const timelineWidth = timelineRef.current.clientWidth;
+      const timelineLeft = timelineRef.current.getBoundingClientRect().left;
+      const x = (event.clientX - timelineLeft) / timelineWidth;
       setCurrentSeconds(Math.round(x * totalDurationSeconds));
     }
   };
 
   const handleTouchMove = (event: TouchEvent) => {
-    if (isDragging) {
-      const windowWidth = window.innerWidth;
-      const x = (event.touches[0].clientX * 1.05) / windowWidth;
+    if (isDragging && timelineRef.current) {
+      const timelineWidth = timelineRef.current.clientWidth;
+      const timelineLeft = timelineRef.current.getBoundingClientRect().left;
+      const x = (event.touches[0].clientX - timelineLeft) / timelineWidth;
       setCurrentSeconds(Math.round(x * totalDurationSeconds));
     }
   };
@@ -58,10 +60,15 @@ const WorkoutTimeline: React.FC<Props> = ({
   });
 
   return (
-    <div className='absolute bottom-6 z-40 flex w-full flex-col items-center opacity-70 portrait:bottom-20'>
+    <div
+      ref={timelineRef}
+      className='absolute bottom-6 z-40 flex w-full flex-col items-center opacity-70 portrait:bottom-20'
+    >
       <div
         className='relative mb-2 flex min-w-fit flex-row flex-col items-center justify-end self-start rounded-lg border-slate-300'
-        style={{ left: (seconds / totalDurationSeconds) * 95 + '%' }}
+        style={{
+          left: `calc(${(seconds / totalDurationSeconds) * 100}% - 2.5rem)`,
+        }}
       >
         <div className='font-serif text-white'>{segment.type}</div>
         <button
@@ -84,7 +91,7 @@ const WorkoutTimeline: React.FC<Props> = ({
               style={{ width: (segment.duration / totalDuration) * 100 + '%' }}
               className='flex items-center justify-center rounded-md border border-2'
             >
-              <div className='text-md font-semi-bold truncate text-center align-middle font-serif'>{`${segmentKey}`}</div>
+              <div className='font-semi-bold truncate text-center align-middle font-serif text-sm'>{`${segmentKey}`}</div>
             </div>
           );
         })}

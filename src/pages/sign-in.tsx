@@ -70,6 +70,7 @@ export default function HomePage() {
               <div className='m-2 my-8 font-serif text-2xl'>Sign In</div>
               <form onSubmit={handleSubmit} className='flex flex-col space-y-4'>
                 <input
+                  autoComplete='email'
                   type='email'
                   placeholder='Email'
                   value={email}
@@ -81,6 +82,7 @@ export default function HomePage() {
                   <p className='text-sm text-red-500'>{emailError}</p>
                 )}
                 <input
+                  autoComplete='password'
                   type='password'
                   placeholder='Password'
                   value={password}
