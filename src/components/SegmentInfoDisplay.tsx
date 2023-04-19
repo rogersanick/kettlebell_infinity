@@ -48,30 +48,39 @@ const SegmentInfoDisplay = ({
             <div className='text-center font-serif transition-opacity duration-500 landscape:hidden'>
               Exercises
             </div>
-            <div className='max-width-full flex flex-row items-center overflow-x-auto transition-opacity duration-500'>
+            <div className='max-width-full flex flex-row items-center justify-center overflow-x-auto transition-opacity duration-500'>
               {segment.exerciseIds.map((id, index) => {
                 const exercise = exercises.find(
                   (exercise) => exercise.id === id
                 );
                 if (!exercise) return null;
                 const { reps, weight } = calculateWeightAndReps({
-                  bodyWeight: 180,
+                  exerciseTitle: exercise.title,
+                  bodyWeightKGs: 180 / 2.2,
                   maxBodyWeightPercentage: exercise.max_bodyweight_percentage,
                   minBodyWeightPercentage: exercise.min_bodyweight_percentage,
                   maxReps: exercise.max_recommended_reps || 0,
                   minReps: exercise.min_recommended_reps || 12,
                   skillLevel: 'Intermediate',
+                  isBodyWeight: exercise.is_body_weight,
                   availableWeights: [
                     4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48,
                   ],
                 });
                 return (
-                  <div key={index} className='m-1 rounded-xl font-sans'>
+                  <div
+                    key={index}
+                    className={`m-1 rounded-xl font-sans ${
+                      selectedExercise === exercise.id
+                        ? 'w-auto whitespace-nowrap'
+                        : 'max-w-1/4 truncate'
+                    }`}
+                  >
                     <Button
                       className={`${
                         selectedExercise === exercise.id
-                          ? 'w-auto whitespace-nowrap border border-4 border-red-500 transition-all duration-300'
-                          : 'w-16 truncate'
+                          ? 'border border-4 border-red-500 transition-all duration-300'
+                          : ''
                       } h-8`}
                       variant='light'
                       onClick={() => {
