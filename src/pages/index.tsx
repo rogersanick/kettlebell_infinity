@@ -26,9 +26,9 @@ export default function HomePage() {
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
-      <main>
-        <section className='overflow-x-hidden bg-white'>
-          <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
+      <main className='h-full w-full'>
+        <section className='h-full overflow-x-hidden bg-white'>
+          <div className='relative flex h-full flex-col items-center justify-center py-12 text-center'>
             <div className='mt-16 flex flex-col'>
               <div className='font-sans text-7xl'>∞</div>
               <h1 className='mt-4 font-serif'>KettleBell Infinity</h1>

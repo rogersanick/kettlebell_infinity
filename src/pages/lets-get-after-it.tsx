@@ -140,9 +140,9 @@ export default function DoTheWorkout() {
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
-      <main>
-        <section className='bg-black'>
-          <div className='layout relative flex min-h-screen flex-col'>
+      <main className='h-full w-full'>
+        <section className='z-0 h-full w-full bg-black'>
+          <div className='layout relative flex h-full w-full flex-col'>
             <div className='flex h-full w-full flex-col justify-between'>
               <div className='z-40 flex w-full flex-row justify-between self-start px-6 text-white'>
                 <button

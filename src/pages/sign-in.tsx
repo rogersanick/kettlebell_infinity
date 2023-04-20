@@ -57,8 +57,8 @@ export default function HomePage() {
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
-      <main>
-        <section className='bg-white'>
+      <main className='h-full w-full'>
+        <section className='h-full w-full bg-white'>
           <div className='layout relative flex min-h-screen flex-col items-center text-center'>
             <div className='flex w-full flex-row justify-between self-start px-6'>
               <button type='button' onClick={() => router.back()}>
