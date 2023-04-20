@@ -4,6 +4,18 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 export default {
   darkMode: 'class',
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  methods: {
+    setViewHeight: function () {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    },
+  },
+  mounted: function () {
+    this.setViewHeight();
+    window.addEventListener('resize', () => {
+      this.setViewHeight();
+    });
+  },
   theme: {
     extend: {
       fontFamily: {
