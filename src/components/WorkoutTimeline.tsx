@@ -65,12 +65,12 @@ const WorkoutTimeline: React.FC<Props> = ({
   );
   const leftPosition = `calc(${leftPercentage}% - ${
     leftPercentage / 100
-  } * 2.5rem)`;
+  } * 3rem)`;
 
   return (
     <div
       ref={timelineRef}
-      className='absolute bottom-6 z-40 flex w-full flex-col items-center opacity-70 portrait:bottom-20'
+      className='absolute bottom-6 z-40 flex w-full flex-col items-center opacity-70'
     >
       <div
         className='relative mb-2 flex min-w-fit flex-row flex-col items-center justify-end self-start rounded-lg border-slate-300'
