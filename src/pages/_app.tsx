@@ -4,6 +4,7 @@ import {
   Session,
 } from '@supabase/auth-helpers-nextjs';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import { Analytics } from '@vercel/analytics/react';
 import { AppProps } from 'next/app';
 import { useState } from 'react';
 
@@ -38,6 +39,7 @@ function MyApp({
       initialSession={pageProps.initialSession}
     >
       <Component {...pageProps} />
+      <Analytics />
     </SessionContextProvider>
   );
 }
