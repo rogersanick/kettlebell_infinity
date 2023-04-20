@@ -59,6 +59,14 @@ const WorkoutTimeline: React.FC<Props> = ({
     };
   });
 
+  const leftPercentage = Math.min(
+    Math.max((seconds / totalDurationSeconds) * 100, 0),
+    100
+  );
+  const leftPosition = `calc(${leftPercentage}% - ${
+    leftPercentage / 100
+  } * 2.5rem)`;
+
   return (
     <div
       ref={timelineRef}
@@ -67,7 +75,7 @@ const WorkoutTimeline: React.FC<Props> = ({
       <div
         className='relative mb-2 flex min-w-fit flex-row flex-col items-center justify-end self-start rounded-lg border-slate-300'
         style={{
-          left: `calc(${(seconds / totalDurationSeconds) * 100}% - 2.5rem)`,
+          left: leftPosition,
         }}
       >
         <div className='font-serif text-white'>{segment.type}</div>
