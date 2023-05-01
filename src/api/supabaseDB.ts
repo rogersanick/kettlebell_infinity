@@ -19,7 +19,7 @@ export const getWorkouts = () => {
   const supabase = getSupabase();
   return supabase
     .from('workouts')
-    .select('*')
+    .select()
     .then((res) => {
       if (res.error) {
         throw res.error;
