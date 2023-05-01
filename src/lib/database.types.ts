@@ -88,6 +88,7 @@ export interface Database {
           requires_walking_room: boolean | null;
           segments_with_exercises: Json;
           title: string;
+          user_id: string;
         };
         Insert: {
           created_at?: string | null;
@@ -102,6 +103,7 @@ export interface Database {
           requires_walking_room?: boolean | null;
           segments_with_exercises: Json;
           title: string;
+          user_id?: string;
         };
         Update: {
           created_at?: string | null;
@@ -116,6 +118,7 @@ export interface Database {
           requires_walking_room?: boolean | null;
           segments_with_exercises?: Json;
           title?: string;
+          user_id?: string;
         };
       };
     };

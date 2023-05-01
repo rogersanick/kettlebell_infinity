@@ -1,16 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { createClient } from '@supabase/supabase-js';
-
-import { Database } from '@/lib/database.types';
-
+import { getSupabase } from '@/api/supabaseClient';
 import { Exercises } from '@/api/supabaseDB';
-
-// Initialize Supabase Client
-const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
 
 // Get new workout overview
 type generateWorkoutType = (
@@ -25,6 +16,7 @@ export const generateNewWorkout: generateWorkoutType = async (
   skill_level: string,
   retryCount = 0
 ) => {
+  const supabase = getSupabase();
   const res = await supabase.functions.invoke('generate_workout', {
     body: JSON.stringify({
       duration,
@@ -75,6 +67,7 @@ export const selectExercisesForSegment: selectExercisesType = async (
     (exercise) =>
       `title: ${exercise.title}, muscle_group: ${exercise.muscles_targeted}, skill_level: ${exercise.difficulty}`
   );
+  const supabase = getSupabase();
   const res = await supabase.functions.invoke('select_exercises', {
     body: JSON.stringify({
       segments: formattedSegments,

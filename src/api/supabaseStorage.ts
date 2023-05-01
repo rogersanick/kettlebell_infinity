@@ -1,12 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
-
-import { Database } from '@/lib/database.types';
-
-// Initialize Supabase Client
-const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
+import { getSupabase } from '@/api/supabaseClient';
 
 const getVideoURLs = async (videoSlugs: (string | undefined)[]) => {
   const results = await Promise.all(
@@ -15,6 +7,7 @@ const getVideoURLs = async (videoSlugs: (string | undefined)[]) => {
         return [videoSlug, null];
       }
 
+      const supabase = getSupabase();
       const result = await supabase.storage
         .from('exercise-videos')
         .getPublicUrl(`${videoSlug}.mp4`);

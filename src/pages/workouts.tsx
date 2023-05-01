@@ -1,13 +1,13 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import Button from '@/components/buttons/Button';
 import { Footer } from '@/components/Footer';
-import Layout from '@/components/layout/Layout';
+import AuthLayout from '@/components/layout/AuthLayout';
 import { NewWorkoutModal } from '@/components/NewWorkoutModal/NewWorkoutModal';
 import Seo from '@/components/Seo';
 import WorkoutTable from '@/components/WorkoutTable';
 
+import { signOut } from '@/api/supabaseAuth';
 import {
   Exercises,
   getExercises,
@@ -34,6 +34,7 @@ export default function HomePage() {
 
   // Creating a new workout
   const [newWorkoutModalOpen, setNewWorkoutModalOpen] = useState(false);
+
   const getNewWorkouts = () =>
     getWorkouts().then((workouts) => {
       setWorkouts(workouts);
@@ -50,10 +51,8 @@ export default function HomePage() {
     });
   }, []);
 
-  const router = useRouter();
-
   return (
-    <Layout>
+    <AuthLayout>
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
       <main>
@@ -68,8 +67,8 @@ export default function HomePage() {
         <section className='bg-white'>
           <div className='layout relative flex min-h-screen flex-col items-center text-center'>
             <div className='flex w-full flex-row justify-between self-start px-6'>
-              <button type='button' onClick={() => router.back()}>
-                {`< Go Back`}
+              <button type='button' onClick={signOut}>
+                Log Out
               </button>
               <div className='text-5xl'>∞</div>
             </div>
@@ -94,7 +93,7 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-    </Layout>
+    </AuthLayout>
   );
 }
 

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { type MediaPlayerElement } from 'vidstack';
 
-import Layout from '@/components/layout/Layout';
+import AuthLayout from '@/components/layout/AuthLayout';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import PlayButton from '@/components/PlayButton';
 import { SegmentInfoDisplay } from '@/components/SegmentInfoDisplay';
@@ -137,7 +137,7 @@ export default function DoTheWorkout() {
   const vidRef = useRef<MediaPlayerElement | null>(null);
   const router = useRouter();
   return (
-    <Layout>
+    <AuthLayout>
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
       <main className='h-full w-full'>
@@ -219,7 +219,7 @@ export default function DoTheWorkout() {
           </div>
         </section>
       </main>
-    </Layout>
+    </AuthLayout>
   );
 }
 

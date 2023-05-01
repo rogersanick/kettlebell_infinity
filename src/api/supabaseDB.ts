@@ -1,16 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
-
-import { Database } from '@/lib/database.types';
-
+import { getSupabase } from '@/api/supabaseClient';
 import { WorkoutOverview } from '@/api/supabaseFunc';
 
-// Initialize Supabase Client
-const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
-
 export const getExercises = () => {
+  const supabase = getSupabase();
   return supabase
     .from('exercises')
     .select('*')
@@ -24,6 +16,7 @@ export const getExercises = () => {
 };
 
 export const getWorkouts = () => {
+  const supabase = getSupabase();
   return supabase
     .from('workouts')
     .select('*')
@@ -37,6 +30,7 @@ export const getWorkouts = () => {
 };
 
 export const getWorkout = (id: string) => {
+  const supabase = getSupabase();
   return supabase
     .from('workouts')
     .select('*')
@@ -66,6 +60,7 @@ export const saveWorkout = (
     };
   }
 ) => {
+  const supabase = getSupabase();
   return supabase
     .from('workouts')
     .insert({
@@ -90,6 +85,7 @@ export const saveWorkout = (
 };
 
 export const deleteWorkout = (id: number) => {
+  const supabase = getSupabase();
   return supabase
     .from('workouts')
     .delete()
@@ -104,6 +100,7 @@ export const deleteWorkout = (id: number) => {
 };
 
 export const getMuscleGroups = () => {
+  const supabase = getSupabase();
   return supabase
     .from('muscle_groups')
     .select('distinct unnest(muscle_groups) AS muscle_group')
