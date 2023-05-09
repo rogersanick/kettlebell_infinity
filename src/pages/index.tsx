@@ -47,14 +47,13 @@ export default function HomePage() {
               <div className='font-sans text-7xl'>∞</div>
               <h1 className='mt-4 font-serif'>KettleBell Infinity</h1>
             </div>
-            <div className='flex w-48 flex-row justify-between'>
-              <ButtonLink className='mt-24' href='/sign-in' variant='light'>
-                Sign In
-              </ButtonLink>
-              <ButtonLink className='mt-24' href='/sign-up' variant='light'>
-                Sign Up
-              </ButtonLink>
-            </div>
+            <ButtonLink
+              className='mt-12 text-4xl'
+              href='/sign-in'
+              variant='light'
+            >
+              Start
+            </ButtonLink>
             <Footer />
           </div>
         </section>
