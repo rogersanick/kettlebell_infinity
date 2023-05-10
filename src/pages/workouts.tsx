@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import Button from '@/components/buttons/Button';
@@ -28,6 +29,8 @@ import {
 // to customize the default configuration.
 
 export default function HomePage() {
+  const router = useRouter();
+
   // Existing workouts and exercises
   const [workouts, setWorkouts] = useState<Workouts>([]);
   const [exercises, setExercises] = useState<Exercises>([]);
@@ -67,9 +70,14 @@ export default function HomePage() {
         <section className='bg-white'>
           <div className='layout relative flex min-h-screen flex-col items-center text-center'>
             <div className='flex w-full flex-row justify-between self-start px-6'>
-              <button type='button' onClick={signOut}>
+              <Button
+                variant='light'
+                type='button'
+                onClick={() => signOut(() => router.push('/'))}
+                className='m-2'
+              >
                 Log Out
-              </button>
+              </Button>
               <div className='text-5xl'>∞</div>
             </div>
             <div className='layout relative flex h-[80vh] flex-col items-center justify-between text-center'>

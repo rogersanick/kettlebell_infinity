@@ -1,10 +1,9 @@
+import { useUser } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import Layout from '@/components/layout/Layout';
 import Loading from '@/components/Loading';
-
-import { getSupabase } from '@/api/supabaseClient';
 
 export default function PublicLayout({
   children,
@@ -15,29 +14,16 @@ export default function PublicLayout({
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  const user = useUser();
+
   // Check for auth on page load
   useEffect(() => {
-    getSupabase()
-      .auth.getSession()
-      .then((session) => {
-        if (session.data.session) {
-          void router.replace('/workouts');
-        } else {
-          setLoading(false);
-        }
-      });
-  }, [router]);
-
-  // Listen for future changes
-  useEffect(() => {
-    getSupabase().auth.onAuthStateChange((_, session) => {
-      if (session) {
-        void router.replace('/workouts');
-      } else {
-        setLoading(false);
-      }
-    });
-  });
+    setLoading(true);
+    if (user) {
+      void router.replace('/workouts');
+    }
+    setLoading(false);
+  }, [user, router]);
 
   return <Layout>{loading ? <Loading /> : children}</Layout>;
 }

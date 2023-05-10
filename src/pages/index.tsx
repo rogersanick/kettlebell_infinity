@@ -1,7 +1,3 @@
-import { useUser } from '@supabase/auth-helpers-react';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-
 import { Footer } from '@/components/Footer';
 import Layout from '@/components/layout/Layout';
 import ButtonLink from '@/components/links/ButtonLink';
@@ -27,15 +23,6 @@ export default function HomePage() {
   // TODO: Set / Rep
   // TODO: Workout Play View
 
-  // Check for auth
-  const router = useRouter();
-  const user = useUser();
-  useEffect(() => {
-    if (user) {
-      router.push('/workouts');
-    }
-  }, [user, router]);
-
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
@@ -48,7 +35,7 @@ export default function HomePage() {
               <h1 className='mt-4 font-serif'>KettleBell Infinity</h1>
             </div>
             <ButtonLink
-              className='mt-12 text-4xl'
+              className='mt-12 text-2xl'
               href='/sign-in'
               variant='light'
             >
