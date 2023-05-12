@@ -320,11 +320,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               skillLevel,
               otherInput
             );
-            // setNewWorkoutOverview(newWorkout);
-            // eslint-disable-next-line no-console
-            console.log('NOT BROKEN?');
-            // eslint-disable-next-line no-console
-            console.log(newWorkout.segments[0].title);
+            setNewWorkoutOverview(newWorkout);
             setSelectedSegment(newWorkout.segments[0].title);
             setIsLoading(false);
           }}

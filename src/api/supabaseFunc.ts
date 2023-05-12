@@ -42,7 +42,11 @@ export const generateNewWorkout: generateWorkoutType = async (
   //   }
   // }
   // res.data.segments = segmentsToRender;
-  return res.data as WorkoutOverview;
+  if (Array.isArray(res.data)) {
+    return res.data[0] as WorkoutOverview;
+  } else {
+    return res.data as WorkoutOverview;
+  }
 };
 
 type selectExercisesType = (
