@@ -320,13 +320,13 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               skillLevel,
               otherInput
             );
-            setNewWorkoutOverview(newWorkout);
+            // setNewWorkoutOverview(newWorkout);
             // eslint-disable-next-line no-console
             console.log('NOT BROKEN?');
             // eslint-disable-next-line no-console
             console.log(newWorkout.segments[0].title);
-            // setSelectedSegment(newWorkout.segments[0].title);
-            // setIsLoading(false);
+            setSelectedSegment(newWorkout.segments[0].title);
+            setIsLoading(false);
           }}
           data-modal-hide='defaultModal'
           type='button'
