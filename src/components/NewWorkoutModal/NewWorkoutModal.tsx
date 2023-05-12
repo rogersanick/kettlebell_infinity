@@ -321,12 +321,16 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               otherInput
             );
             // eslint-disable-next-line no-console
-            console.log('FIND ME');
-            // eslint-disable-next-line no-console
-            console.log(JSON.stringify(newWorkout));
+            console.log('NOT BROKEN YET 1');
             setNewWorkoutOverview(newWorkout);
+            // eslint-disable-next-line no-console
+            console.log('NOT BROKEN YET 2');
             setSelectedSegment(newWorkout.segments[0].title);
+            // eslint-disable-next-line no-console
+            console.log('NOT BROKEN YET 3');
             setIsLoading(false);
+            // eslint-disable-next-line no-console
+            console.log('NOT BROKEN YET 4');
           }}
           data-modal-hide='defaultModal'
           type='button'
