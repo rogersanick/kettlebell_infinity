@@ -32,6 +32,7 @@
     "@vidstack/react": "^0.4.4",
     "clsx": "^1.2.1",
     "next": "13.3.2",
+    "nosleep.js": "^0.12.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",

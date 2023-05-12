@@ -8,12 +8,14 @@ type generateWorkoutType = (
   duration: number,
   muscle_groups: string[],
   skill_level: string,
+  other_input: string,
   retryCount?: number
 ) => Promise<WorkoutOverview>;
 export const generateNewWorkout: generateWorkoutType = async (
   duration: number,
   muscle_groups: string[],
   skill_level: string,
+  other_input: string,
   retryCount = 0
 ) => {
   const supabase = getSupabase();
@@ -22,6 +24,7 @@ export const generateNewWorkout: generateWorkoutType = async (
       duration,
       muscle_groups,
       skill_level,
+      other_input,
     }),
   });
   if (res.error && retryCount < 3) {
@@ -29,6 +32,7 @@ export const generateNewWorkout: generateWorkoutType = async (
       duration,
       muscle_groups,
       skill_level,
+      other_input,
       retryCount + 1
     )) as WorkoutOverview;
   } else {

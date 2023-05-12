@@ -1,3 +1,5 @@
+import { SupabaseClient } from '@supabase/supabase-js';
+
 import { getSupabase } from '@/api/supabaseClient';
 import { WorkoutOverview } from '@/api/supabaseFunc';
 
@@ -15,11 +17,13 @@ export const getExercises = () => {
     });
 };
 
-export const getWorkouts = () => {
-  const supabase = getSupabase();
-  return supabase
+export const getWorkouts = async (client: SupabaseClient) => {
+  const userResponse = await client.auth.getUser();
+  const userId = userResponse?.data.user?.id;
+  return client
     .from('workouts')
     .select()
+    .eq('user_id', userId)
     .then((res) => {
       if (res.error) {
         throw res.error;
@@ -29,9 +33,8 @@ export const getWorkouts = () => {
     });
 };
 
-export const getWorkout = (id: string) => {
-  const supabase = getSupabase();
-  return supabase
+export const getWorkout = (id: string, client: SupabaseClient) => {
+  return client
     .from('workouts')
     .select('*')
     .limit(1)
@@ -45,7 +48,8 @@ export const getWorkout = (id: string) => {
     });
 };
 
-export const saveWorkout = (
+export const saveWorkout = async (
+  client: SupabaseClient,
   workoutOverview: WorkoutOverview,
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced',
   isBodyWeight: boolean,
@@ -60,8 +64,7 @@ export const saveWorkout = (
     };
   }
 ) => {
-  const supabase = getSupabase();
-  return supabase
+  return client
     .from('workouts')
     .insert({
       description: workoutOverview.description,

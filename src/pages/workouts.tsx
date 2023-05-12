@@ -1,3 +1,4 @@
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -30,6 +31,7 @@ import {
 
 export default function HomePage() {
   const router = useRouter();
+  const client = useSupabaseClient();
 
   // Existing workouts and exercises
   const [workouts, setWorkouts] = useState<Workouts>([]);
@@ -39,7 +41,7 @@ export default function HomePage() {
   const [newWorkoutModalOpen, setNewWorkoutModalOpen] = useState(false);
 
   const getNewWorkouts = () =>
-    getWorkouts().then((workouts) => {
+    getWorkouts(client).then((workouts) => {
       setWorkouts(workouts);
     });
 
@@ -52,6 +54,7 @@ export default function HomePage() {
     getExercises().then((exercises) => {
       setExercises(exercises);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

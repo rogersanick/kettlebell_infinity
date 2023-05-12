@@ -1,4 +1,6 @@
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
+import NoSleep from 'nosleep.js';
 import { useEffect, useRef, useState } from 'react';
 import { type MediaPlayerElement } from 'vidstack';
 
@@ -25,6 +27,7 @@ export default function DoTheWorkout() {
   const [workout, setWorkout] = useState<Workout | undefined>();
   const [exercises, setExercises] = useState<Exercises>([]);
   const { query } = useRouter();
+  const client = useSupabaseClient();
 
   // Start to load video files for the workout
   const [videoURLs, setVideoURLs] = useState({} as { [key: string]: string });
@@ -58,6 +61,11 @@ export default function DoTheWorkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workout, exercises]);
 
+  useEffect(() => {
+    const noSleep = new NoSleep();
+    noSleep.enable();
+  }, []);
+
   // Timer
   const [seconds, setSeconds] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -65,7 +73,7 @@ export default function DoTheWorkout() {
   // Get workouts and exercises
   useEffect(() => {
     if (query.id && typeof query.id === 'string') {
-      getWorkout(query.id).then((workout) => {
+      getWorkout(query.id, client).then((workout) => {
         setWorkout(workout);
       });
       getExercises().then((exercises) => {
@@ -76,7 +84,7 @@ export default function DoTheWorkout() {
       setError('No workout ID provided.');
       setIsLoading(false);
     }
-  }, [query]);
+  }, [query, client]);
 
   // Start the timer
   useEffect(() => {

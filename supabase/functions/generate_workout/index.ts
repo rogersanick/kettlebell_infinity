@@ -25,7 +25,7 @@ serve(async (req: any) => {
   }
 
   try {
-    const { duration, muscle_groups, skill_level } = await req.json()
+    const { duration, muscle_groups, skill_level, other_input } = await req.json()
     const muscleGroupsOrFullBody = muscle_groups || ["full body"]
 
     // Initial Prompt, get workout and segments
@@ -42,7 +42,7 @@ serve(async (req: any) => {
     const sanitizedResponse = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{
-        role: "user", content: sanitizeAndCheckDuration(extractedWorkout)
+        role: "user", content: sanitizeAndCheckDuration(extractedWorkout, other_input)
       }],
     });
     const extractedSanitizedWorkout = JSON.parse(sanitizedResponse.data.choices[0].message!.content!) as unknown as WorkoutOverview;
@@ -93,7 +93,7 @@ export const generateWorkoutOverviewPrompt = (duration: number, muscle_groups: s
     `;
 }
 
-export const sanitizeAndCheckDuration = (extractedWorkout: any) => {
+export const sanitizeAndCheckDuration = (extractedWorkout: any, other_input: string) => {
   return `
     Only respond with edited JSON conforming to the type below:
 
@@ -109,6 +109,8 @@ export const sanitizeAndCheckDuration = (extractedWorkout: any) => {
         }[]
       }
     “””
+
+    Apply this input to the returned data: ${other_input}
 
     Adjust this input: ${JSON.stringify(extractedWorkout)} with the following instructions:
     1. Titles should not be longer than 10 words.

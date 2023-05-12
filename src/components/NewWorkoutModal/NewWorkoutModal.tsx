@@ -1,3 +1,4 @@
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useEffect, useId, useState } from 'react';
 import Select from 'react-select';
 
@@ -32,7 +33,8 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
   // Basic props
   const { isOpen, closeModal, exercises } = props;
   const id = useId();
-  const id1 = useId();
+  // const id1 = useId();
+  const client = useSupabaseClient();
 
   // Form Progress
   const [formStep, setFormStep] = useState(0);
@@ -61,17 +63,19 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     ).map((muscle) => ({ value: muscle, label: muscle }))
   );
 
-  const [selectedWeights, setSelectedWeights] = useState(
-    [] as { value: number; label: string }[]
-  );
-  const [weights] = useState(
-    [4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48].map((weight) => {
-      return {
-        value: weight,
-        label: `${weight} KG, ${Math.round(2.2 * weight * 10) / 10} LB`,
-      };
-    })
-  );
+  // const [selectedWeights, setSelectedWeights] = useState(
+  //   [] as { value: number; label: string }[]
+  // );
+  // const [weights] = useState(
+  //   [4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48].map((weight) => {
+  //     return {
+  //       value: weight,
+  //       label: `${weight} KG, ${Math.round(2.2 * weight * 10) / 10} LB`,
+  //     };
+  //   })
+  // );
+
+  const [otherInput, setOtherInput] = useState('');
 
   useEffect(() => {
     setMuscleGroups(
@@ -133,7 +137,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
     setIncludeCarrying(false);
     setIncludeDoubleBells(false);
     setSelectedMuscleGroups([]);
-    setSelectedWeights([]);
+    // setSelectedWeights([]);
     setNewWorkoutOverview(undefined);
     setSelectedSegment(undefined);
     setSelectedExercises(undefined);
@@ -203,6 +207,19 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
         />
       )}
       <label
+        htmlFor='other-input'
+        className='mb-2 text-sm font-medium text-gray-900 dark:text-white'
+      >
+        Do you have other input for our AI agent to consider? (e.g Make a Shrek
+        themed workout)
+      </label>
+      <input
+        className='dark:focus:ring-blue-500} mb-4 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500'
+        value={otherInput}
+        onChange={(e) => setOtherInput(e.target.value)}
+        id='other-input'
+      ></input>
+      {/* <label
         htmlFor='weights'
         className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
       >
@@ -224,7 +241,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
           options={weights}
           classNamePrefix='select'
         />
-      )}
+      )} */}
 
       <label className='relative mb-4 mt-4 inline-flex cursor-pointer items-center'>
         <input
@@ -300,7 +317,8 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
             const newWorkout = await generateNewWorkout(
               duration,
               selectedMuscleGroups.map((smg) => smg.value),
-              skillLevel
+              skillLevel,
+              otherInput
             );
             setNewWorkoutOverview(newWorkout);
             setSelectedSegment(newWorkout.segments[0].title);
@@ -333,7 +351,8 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               const newWorkout = await generateNewWorkout(
                 duration,
                 selectedMuscleGroups.map((smg) => smg.value),
-                skillLevel
+                skillLevel,
+                otherInput
               );
               setNewWorkoutOverview(newWorkout);
               setSelectedSegment(newWorkout.segments[0].title);
@@ -467,6 +486,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               setIsLoading(true);
               selectedExercises &&
                 (await saveWorkout(
+                  client,
                   newWorkoutOverview,
                   skillLevel,
                   includeBodyWeight,

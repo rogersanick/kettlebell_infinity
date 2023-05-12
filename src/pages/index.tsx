@@ -35,7 +35,7 @@ export default function HomePage() {
               <h1 className='mt-4 font-serif'>KettleBell Infinity</h1>
             </div>
             <ButtonLink
-              className='mt-12 text-2xl'
+              className='mt-12 text-xl'
               href='/sign-in'
               variant='light'
             >
