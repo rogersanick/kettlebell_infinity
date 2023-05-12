@@ -320,6 +320,10 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
               skillLevel,
               otherInput
             );
+            // eslint-disable-next-line no-console
+            console.log('FIND ME');
+            // eslint-disable-next-line no-console
+            console.log(newWorkout);
             setNewWorkoutOverview(newWorkout);
             setSelectedSegment(newWorkout.segments[0].title);
             setIsLoading(false);
