@@ -323,7 +323,7 @@ export const NewWorkoutModal = (props: NewWorkoutModalProps) => {
             // eslint-disable-next-line no-console
             console.log('FIND ME');
             // eslint-disable-next-line no-console
-            console.log(newWorkout);
+            console.log(JSON.stringify(newWorkout));
             setNewWorkoutOverview(newWorkout);
             setSelectedSegment(newWorkout.segments[0].title);
             setIsLoading(false);

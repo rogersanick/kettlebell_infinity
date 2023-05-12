@@ -29,8 +29,6 @@ export const generateNewWorkout: generateWorkoutType = async (
   if (res.error) {
     throw Error(res.error);
   }
-  const workout = res.data as WorkoutOverview;
-
   // Prevent too many segments
   // const segmentsToRender = [];
   // const segments = workout.segments;
@@ -44,7 +42,7 @@ export const generateNewWorkout: generateWorkoutType = async (
   //   }
   // }
   // res.data.segments = segmentsToRender;
-  return workout;
+  return res.data as WorkoutOverview;
 };
 
 type selectExercisesType = (
