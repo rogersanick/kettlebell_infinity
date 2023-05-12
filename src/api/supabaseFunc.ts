@@ -15,8 +15,7 @@ export const generateNewWorkout: generateWorkoutType = async (
   duration: number,
   muscle_groups: string[],
   skill_level: string,
-  other_input: string,
-  retryCount = 0
+  other_input: string
 ) => {
   const supabase = getSupabase();
   const res = await supabase.functions.invoke('generate_workout', {
@@ -27,30 +26,25 @@ export const generateNewWorkout: generateWorkoutType = async (
       other_input,
     }),
   });
-  if (res.error && retryCount < 3) {
-    return (await generateNewWorkout(
-      duration,
-      muscle_groups,
-      skill_level,
-      other_input,
-      retryCount + 1
-    )) as WorkoutOverview;
-  } else {
-    const workout = res.data as WorkoutOverview;
-    const segmentsToRender = [];
-    const segments = workout.segments;
-    let duration = 0;
-    for (let i = 0; i < segments.length; i++) {
-      if (duration + segments[i].duration <= workout.duration) {
-        segmentsToRender.push(segments[i]);
-        duration += segments[i].duration;
-      } else {
-        break;
-      }
-    }
-    res.data.segments = segmentsToRender;
-    return res.data as WorkoutOverview;
+  if (res.error) {
+    throw Error(res.error);
   }
+  const workout = res.data as WorkoutOverview;
+
+  // Prevent too many segments
+  // const segmentsToRender = [];
+  // const segments = workout.segments;
+  // let returnedDuration = 0;
+  // for (let i = 0; i < segments.length; i++) {
+  //   if (duration + segments[i].duration <= workout.duration) {
+  //     segmentsToRender.push(segments[i]);
+  //     duration += segments[i].duration;
+  //   } else {
+  //     break;
+  //   }
+  // }
+  // res.data.segments = segmentsToRender;
+  return workout;
 };
 
 type selectExercisesType = (
