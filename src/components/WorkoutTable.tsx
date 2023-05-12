@@ -99,7 +99,7 @@ const WorkoutTable = (props: WorkoutTableProps) => {
                   <div className='flex flex-row flex-wrap'>
                     {workout.muscles_targeted
                       .slice(0, 10)
-                      .map((muscle, index) => {
+                      .map((muscle: string, index: number) => {
                         return (
                           <div
                             key={index}
